@@ -10,21 +10,11 @@
       "serve:dev": "sirv dist --dev",
       "dev": "run-p build:auto serve:dev"
    },
-   "repository": {
-      "type": "git",
-      "url": "git+https://github.com/noprodev/svelte-starter-postcss.git"
-   },
    "keywords": [
       "Svelte",
       "starter",
       "PostCSS"
    ],
-   "author": "noprodev",
-   "license": "UNLICENSED",
-   "bugs": {
-      "url": "https://github.com/noprodev/svelte-starter-postcss/issues"
-   },
-   "homepage": "https://github.com/noprodev/svelte-starter-postcss#readme",
    "devDependencies": {
       "@fullhuman/postcss-purgecss": "^1.2.0",
       "chokidar": "^3.0.0",
