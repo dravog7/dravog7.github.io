@@ -2,11 +2,11 @@
   "version": 3,
   "file": "components.css",
   "sources": [
-    "../src/App.svelte"
+    "../src/pages/Construction.svelte"
   ],
   "sourcesContent": [
-    "<script>\nimport Loading from \"./Loading.svelte\"\n</script>\n<style lang=\"text/postcss\">.main{font-family:Pacifico,cursive}</style>\n<div class=\"m-auto text-center w-40 h-40 main\">\n    <span class=\"m-auto\">UNDER CONSTRUCTION!</span>\n    <Loading/>\n</div>"
+    "<script>\nimport Loading from \"../components/Loading.svelte\"\n</script>\n<style lang=\"text/postcss\">.main{font-family:Pacifico}</style>\n<div class=\"flex m-auto text-center w-56 h-56 main\">\n    <span class=\"m-auto\">UNDER CONSTRUCTION!</span>\n</div>"
   ],
   "names": [],
-  "mappings": "AAG2B,mBAAK,CAAC,YAAY,QAAQ,CAAC,OAAO,CAAC"
+  "mappings": "AAG2B,mBAAK,CAAC,YAAY,QAAQ,CAAC"
 }
