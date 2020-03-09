@@ -2,11 +2,13 @@
   "version": 3,
   "file": "components.css",
   "sources": [
-    "..\\src\\Button.svelte"
+    "../src/Screens.svelte",
+    "../src/App.svelte"
   ],
   "sourcesContent": [
-    "<script>\r\n  let clicks = 0;\r\n\r\n  const handleClick = () => (clicks += 1);\r\n</script>\r\n\r\n<style type=\"text/postcss\">.space{padding:.5rem 1rem}.color{color:#fff}</style>\r\n\r\n<button\r\n  class=\"color space border-none bg-blue-700 hover:bg-blue-400 rounded\"\r\n  on:click={handleClick}>\r\n  Clicked {clicks} {clicks === 1 ? 'time' : 'times'}\r\n</button>\r\n"
+    "<style lang=\"text/postcss\">.snap-start{scroll-snap-align:start}</style>\n\n<div class=\"w-screen h-screen bg-blue-400 snap-start\">\n<span  class=\"m-auto\">hello</span>\n</div>",
+    "<script>\r\nimport Loading from \"./Loading.svelte\"\r\n</script>\r\n<style lang=\"text/postcss\">.main{font-family:Pacifico,cursive}</style>\r\n<div class=\"m-auto text-center w-40 h-40 main\">\r\n    <span class=\"m-auto\">UNDER CONSTRUCTION!</span>\r\n    <Loading/>\r\n</div>"
   ],
   "names": [],
-  "mappings": "AAM2B,oBAAM,CAAC,QAAQ,KAAK,CAAC,IAAI,CAAC,oBAAM,CAAC,MAAM,IAAI,CAAC"
+  "mappings": "AAA2B,yBAAW,CAAC,kBAAkB,KAAK,CAAC;ACGpC,mBAAK,CAAC,YAAY,QAAQ,CAAC,OAAO,CAAC"
 }

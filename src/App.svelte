@@ -1,12 +1,12 @@
 <script>
-  import Button from "./Button.svelte";
+import Loading from "./Loading.svelte"
 </script>
-
 <style lang="text/postcss">
-
+.main {
+    font-family: 'Pacifico', cursive;
+}
 </style>
-
-<main>
-  <h1 class="text-3xl text-red-600">Hello !</h1>
-  <Button />
-</main>
+<div class="m-auto text-center w-40 h-40 main">
+    <span class="m-auto">UNDER CONSTRUCTION!</span>
+    <Loading/>
+</div>
