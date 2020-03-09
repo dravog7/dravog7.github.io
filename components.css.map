@@ -2,11 +2,11 @@
   "version": 3,
   "file": "components.css",
   "sources": [
-    "../src/Button.svelte"
+    "../src/App.svelte"
   ],
   "sourcesContent": [
-    "<script>\n  let clicks = 0;\n\n  const handleClick = () => (clicks += 1);\n</script>\n\n<style type=\"text/postcss\">.space{padding:.5rem 1rem}.color{color:#fff}</style>\n\n<button\n  class=\"color space border-none bg-blue-700 hover:bg-blue-400 rounded\"\n  on:click={handleClick}>\n  Clicked {clicks} {clicks === 1 ? 'time' : 'times'}\n</button>\n"
+    "<script>\nimport Loading from \"./Loading.svelte\"\n</script>\n<style lang=\"text/postcss\">.main{font-family:Pacifico,cursive}</style>\n<div class=\"m-auto text-center w-40 h-40 main\">\n    <span class=\"m-auto\">UNDER CONSTRUCTION!</span>\n    <Loading/>\n</div>"
   ],
   "names": [],
-  "mappings": "AAM2B,oBAAM,CAAC,QAAQ,KAAK,CAAC,IAAI,CAAC,oBAAM,CAAC,MAAM,IAAI,CAAC"
+  "mappings": "AAG2B,mBAAK,CAAC,YAAY,QAAQ,CAAC,OAAO,CAAC"
 }
