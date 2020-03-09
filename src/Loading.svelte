@@ -1,1 +1,0 @@
-<img src="loading.svg" alt="not Yet!"/>
