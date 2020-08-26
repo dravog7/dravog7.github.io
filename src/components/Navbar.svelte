@@ -1,11 +1,7 @@
 <script>
 import Hamburger from './utils/Hamburger.svelte';
+import { location } from '../stores/navloc.js';
 let menuOpen = false;
-let route = document.location.hash;
-
-function hashchange(e){
-    route = document.location.hash;
-}
 </script>
 
 <style lang="text/postcss">
@@ -26,7 +22,6 @@ function hashchange(e){
     @apply w-1/4;
 }
 </style>
-<svelte:window on:hashchange={hashchange}/>
 <div class="hidden w-0 w-drawer">
     Used to make sure conditional css styles are not purged
 </div>
@@ -39,26 +34,26 @@ function hashchange(e){
 <div class="
     fixed lg:flex top-0 right-0 lg:h-auto lg:w-screen 
     bg-white shadow-md rounded-b 
-    transition-all duration-500 ease-in-out 
+    transition-all duration-300 ease-in-out 
     overflow-hidden"
     class:w-0='{!menuOpen}'
     class:w-drawer='{menuOpen}'
 >
     <div class="h-12 w-full"></div>
     <ol class="lg:flex text-center lg:m-auto">
-        <li class:active={(route=='')||(route=='#top')}
+        <li class:active={$location['#top']}
             class="nav-container border-l-4 lg:border-b-4 lg:border-l-0 py-6 lg:px-6">
             <a href='#top'>Home</a>
         </li>
-        <li class:active={route=='#about'}
+        <li class:active={$location['#about']}
             class="nav-container border-l-4 lg:border-b-4 lg:border-l-0 py-6 lg:px-6">
             <a href='#about'>About</a>
         </li>
-        <li class:active={route=='#work'}
+        <li class:active={$location['#work']}
             class="nav-container border-l-4 lg:border-b-4 lg:border-l-0 py-6 lg:px-6">
-            <a href='#work'>Experience</a>
+            <a href='#work'>Works</a>
         </li>
-        <li class:active={route=='#contact'}
+        <li class:active={$location['#contact']}
             class="nav-container border-l-4 lg:border-b-4 lg:border-l-0 py-6 lg:px-6">
             <a href='#contact'>contact</a>
         </li>

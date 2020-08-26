@@ -1,4 +1,26 @@
 <script>
+import { onMount } from 'svelte';
+import inView from 'in-view';
+import { location } from '../stores/navloc.js';
+
+let onMe = false;
+$: onMe = $location['#about']
+
+onMount(async ()=>{
+    inView('#about h1')
+    .on('enter',()=>{
+        location.update(val=>{
+            val['#about']=true;
+            return val;
+            });
+    })
+    .on('exit',()=>{
+        location.update(val=>{
+            val['#about']=false;
+            return val;
+            });
+    })
+})
 </script>
 
 <style lang="text/postcss">
@@ -6,10 +28,11 @@
 
 <div id='about'
 class="flex flex-col
-    w-11/12 mx-auto text-center py-24
+    w-11/12 h-screen mx-auto text-center py-24
     bg-blue-300 text-white rounded-lg
-    hover:bg-blue-400 hover:shadow-md hover:border-blue-400
+    hover:shadow-md
     transition-all duration-500 ease-in-out"
+class:bg-blue-400={onMe}
 >
     <h1 class="w-full font-bold text-4xl">About</h1>
     <p class="w-9/12 m-auto">

@@ -1,4 +1,23 @@
 <script>
+import { onMount } from 'svelte';
+import inView from 'in-view';
+import { location } from '../stores/navloc.js';
+
+onMount(async ()=>{
+    inView('#top h1')
+    .on('enter',()=>{
+        location.update(val=>{
+            val['#top']=true;
+            return val;
+            });
+    })
+    .on('exit',()=>{
+        location.update(val=>{
+            val['#top']=false;
+            return val;
+            });
+    })
+})
 </script>
 
 <style lang="text/postcss">
