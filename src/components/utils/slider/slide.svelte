@@ -12,8 +12,8 @@ export let data;
 </style>
 {#if data.active}
 <div in:fly="{{x:200,delay:200, duration: 500, easing:quintInOut }}" out:fly="{{x:-200, duration: 500,easing:quintInOut }}" class="slide">
-    <div class='m-auto bg-blue-500 flex w-6/12 text-white p-4 rounded-md'>
-        <div class="flex-1 flex">
+    <div class='m-auto bg-blue-500 flex flex-col lg:flex-row h-64 lg:w-9/12 text-white p-4 rounded-md'>
+        <div class="flex-1 flex px-4">
             <h1 class="m-auto text-4xl font-black">{data.name}</h1>
         </div>
         <div class="flex-1 flex">

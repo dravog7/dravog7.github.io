@@ -49,7 +49,7 @@ let menuItems = [
     Used to make sure conditional css styles are not purged
 </div>
 
-<div class="flex fixed right-0 top-0 pr-1 lg:hidden z-10">
+<div class="flex fixed right-0 top-0 pr-1 lg:hidden z-40">
     <div class="flex m-auto">
             <Hamburger bind:active={menuOpen}/>
     </div>

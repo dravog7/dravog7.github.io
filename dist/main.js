@@ -1029,13 +1029,13 @@
     			p = element("p");
     			t2 = text(t2_value);
     			attr_dev(h1, "class", "m-auto text-4xl font-black");
-    			add_location(h1, file$2, 12, 12, 576);
-    			attr_dev(div0, "class", "flex-1 flex");
-    			add_location(div0, file$2, 11, 8, 538);
-    			add_location(p, file$2, 15, 12, 693);
+    			add_location(h1, file$2, 12, 12, 610);
+    			attr_dev(div0, "class", "flex-1 flex px-4");
+    			add_location(div0, file$2, 11, 8, 567);
+    			add_location(p, file$2, 15, 12, 727);
     			attr_dev(div1, "class", "flex-1 flex");
-    			add_location(div1, file$2, 14, 8, 655);
-    			attr_dev(div2, "class", "m-auto bg-blue-500 flex w-6/12 text-white p-4 rounded-md");
+    			add_location(div1, file$2, 14, 8, 689);
+    			attr_dev(div2, "class", "m-auto bg-blue-500 flex flex-col lg:flex-row h-64 lg:w-9/12 text-white p-4 rounded-md");
     			add_location(div2, file$2, 10, 4, 459);
     			attr_dev(div3, "class", "slide svelte-l0anm2");
     			add_location(div3, file$2, 9, 0, 316);
@@ -1232,7 +1232,7 @@
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[8] = list[i];
+    	child_ctx[7] = list[i];
     	return child_ctx;
     }
 
@@ -1242,7 +1242,7 @@
     	let current;
 
     	slide = new Slide({
-    			props: { data: /*slide*/ ctx[8] },
+    			props: { data: /*slide*/ ctx[7] },
     			$$inline: true
     		});
 
@@ -1256,7 +1256,7 @@
     		},
     		p: function update(ctx, dirty) {
     			const slide_changes = {};
-    			if (dirty & /*buffer*/ 1) slide_changes.data = /*slide*/ ctx[8];
+    			if (dirty & /*buffer*/ 1) slide_changes.data = /*slide*/ ctx[7];
     			slide.$set(slide_changes);
     		},
     		i: function intro(local) {
@@ -1321,14 +1321,14 @@
     				each_blocks[i].c();
     			}
 
-    			attr_dev(button0, "class", "left svelte-dv28mk");
-    			add_location(button0, file$3, 45, 8, 1605);
-    			attr_dev(button1, "class", "right svelte-dv28mk");
-    			add_location(button1, file$3, 46, 8, 1663);
+    			attr_dev(button0, "class", "left svelte-k28laf");
+    			add_location(button0, file$3, 45, 8, 1424);
+    			attr_dev(button1, "class", "right svelte-k28laf");
+    			add_location(button1, file$3, 46, 8, 1482);
     			attr_dev(div0, "class", "absolute inset-0 flex items-center justify-between");
-    			add_location(div0, file$3, 44, 4, 1532);
+    			add_location(div0, file$3, 44, 4, 1351);
     			attr_dev(div1, "class", "m-auto w-screen h-64 overflow-hidden relative");
-    			add_location(div1, file$3, 43, 0, 1468);
+    			add_location(div1, file$3, 43, 0, 1287);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1445,19 +1445,6 @@
     		transed = true;
     	}
 
-    	function automatic() {
-    		if (!transed) add();
-    		transed = false;
-    	}
-
-    	onMount(function () {
-    		interval = setInterval(automatic, 10000);
-    	});
-
-    	onDestroy(function () {
-    		clearInterval(interval);
-    	});
-
     	const writable_props = ["Data"];
 
     	Object.keys($$props).forEach(key => {
@@ -1481,8 +1468,7 @@
     		interval,
     		transed,
     		add,
-    		sub,
-    		automatic
+    		sub
     	});
 
     	$$self.$inject_state = $$props => {
@@ -2094,7 +2080,7 @@
     			add_location(div0, file$7, 28, 0, 1102);
     			attr_dev(div1, "class", "flex m-auto");
     			add_location(div1, file$7, 33, 4, 1267);
-    			attr_dev(div2, "class", "flex fixed right-0 top-0 pr-1 lg:hidden z-10");
+    			attr_dev(div2, "class", "flex fixed right-0 top-0 pr-1 lg:hidden z-40");
     			add_location(div2, file$7, 32, 0, 1204);
     			attr_dev(div3, "class", "h-12 w-full");
     			add_location(div3, file$7, 45, 4, 1617);

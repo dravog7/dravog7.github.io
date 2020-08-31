@@ -25,28 +25,28 @@ function sub(){
     transed = true;
 }
 
-function automatic(){
-    if(!transed)
-        add();
-    transed = false;
-}
+// function automatic(){
+//     if(!transed)
+//         add();
+//     transed = false;
+// }
 
-onMount(function(){
-    interval = setInterval(automatic,10000);
-})
-onDestroy(function(){
-    clearInterval(interval);
-})
+// onMount(function(){
+//     interval = setInterval(automatic,10000);
+// })
+// onDestroy(function(){
+//     clearInterval(interval);
+// })
 </script>
 <style lang="text/postcss">
 .left, .right{
-    @apply rounded-full border-white border-2 p-4 text-white text-xl font-black z-10;
+    @apply rounded-full text-white text-2xl font-black z-10;
 }
 .left:focus,.right:focus{
     @apply outline-none;
 }
 .left:hover,.right:hover{
-    @apply border-blue-300 text-black bg-blue-300;
+    @apply border-blue-300 text-black;
 }
 </style>
 
