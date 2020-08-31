@@ -1,27 +1,24 @@
 <script>
-export let slide;
+import { fly } from 'svelte/transition';
+import { quintInOut } from 'svelte/easing';
+export let data;
 </script>
 
 <style lang="text/postcss">
 .slide {
-    opacity: 0;
-    left: -100%;
-    @apply absolute flex ease-in-out w-full h-full;
-    transition: opacity 0.4s ease-in-out,transform 0.4s ease-in-out 0.4s;
-}
-.slide.active{
     opacity: 1;
-    transform: translateX(100%);
+    @apply absolute flex w-full h-full;
 }
-
 </style>
-<div class:active={slide.active} class="slide">
+{#if data.active}
+<div in:fly="{{x:200,delay:200, duration: 500, easing:quintInOut }}" out:fly="{{x:-200, duration: 500,easing:quintInOut }}" class="slide">
     <div class='m-auto bg-blue-500 flex w-6/12 text-white p-4 rounded-md'>
         <div class="flex-1 flex">
-            <h1 class="m-auto text-4xl font-black">{slide.name}</h1>
+            <h1 class="m-auto text-4xl font-black">{data.name}</h1>
         </div>
         <div class="flex-1 flex">
-            <p>{slide.description}</p>
+            <p>{data.description}</p>
         </div>
     </div>
 </div>
+{/if}

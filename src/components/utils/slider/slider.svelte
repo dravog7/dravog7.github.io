@@ -39,14 +39,6 @@ onDestroy(function(){
 })
 </script>
 <style lang="text/postcss">
-.slide-container{
-    @apply m-auto w-screen h-64 overflow-hidden relative;
-}
-
-.button-group{
-    @apply absolute inset-0 flex items-center justify-between;
-}
-
 .left, .right{
     @apply rounded-full border-white border-2 p-4 text-white text-xl font-black z-10;
 }
@@ -58,12 +50,12 @@ onDestroy(function(){
 }
 </style>
 
-<div class="slide-container">
-    <div class='button-group'>
+<div class="m-auto w-screen h-64 overflow-hidden relative">
+    <div class='absolute inset-0 flex items-center justify-between'>
         <button class="left" on:click={sub}>&lt;</button>
         <button class="right" on:click={add}>&gt;</button>
     </div>
     {#each buffer as slide}
-        <Slide {slide}/>
+        <Slide data={slide}/>
     {/each}
 </div>

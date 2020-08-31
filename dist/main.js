@@ -4,6 +4,7 @@
     'use strict';
 
     function noop() { }
+    const identity = x => x;
     function add_location(element, file, line, column, char) {
         element.__svelte_meta = {
             loc: { file, line, column, char }
@@ -43,6 +44,41 @@
         component.$$.on_destroy.push(subscribe(store, callback));
     }
 
+    const is_client = typeof window !== 'undefined';
+    let now = is_client
+        ? () => window.performance.now()
+        : () => Date.now();
+    let raf = is_client ? cb => requestAnimationFrame(cb) : noop;
+
+    const tasks = new Set();
+    function run_tasks(now) {
+        tasks.forEach(task => {
+            if (!task.c(now)) {
+                tasks.delete(task);
+                task.f();
+            }
+        });
+        if (tasks.size !== 0)
+            raf(run_tasks);
+    }
+    /**
+     * Creates a new task that runs on each raf frame
+     * until it returns a falsy value or is aborted
+     */
+    function loop(callback) {
+        let task;
+        if (tasks.size === 0)
+            raf(run_tasks);
+        return {
+            promise: new Promise(fulfill => {
+                tasks.add(task = { c: callback, f: fulfill });
+            }),
+            abort() {
+                tasks.delete(task);
+            }
+        };
+    }
+
     function append(target, node) {
         target.appendChild(node);
     }
@@ -67,6 +103,9 @@
     function space() {
         return text(' ');
     }
+    function empty() {
+        return text('');
+    }
     function listen(node, event, handler, options) {
         node.addEventListener(event, handler, options);
         return () => node.removeEventListener(event, handler, options);
@@ -87,6 +126,67 @@
         const e = document.createEvent('CustomEvent');
         e.initCustomEvent(type, false, false, detail);
         return e;
+    }
+
+    const active_docs = new Set();
+    let active = 0;
+    // https://github.com/darkskyapp/string-hash/blob/master/index.js
+    function hash(str) {
+        let hash = 5381;
+        let i = str.length;
+        while (i--)
+            hash = ((hash << 5) - hash) ^ str.charCodeAt(i);
+        return hash >>> 0;
+    }
+    function create_rule(node, a, b, duration, delay, ease, fn, uid = 0) {
+        const step = 16.666 / duration;
+        let keyframes = '{\n';
+        for (let p = 0; p <= 1; p += step) {
+            const t = a + (b - a) * ease(p);
+            keyframes += p * 100 + `%{${fn(t, 1 - t)}}\n`;
+        }
+        const rule = keyframes + `100% {${fn(b, 1 - b)}}\n}`;
+        const name = `__svelte_${hash(rule)}_${uid}`;
+        const doc = node.ownerDocument;
+        active_docs.add(doc);
+        const stylesheet = doc.__svelte_stylesheet || (doc.__svelte_stylesheet = doc.head.appendChild(element('style')).sheet);
+        const current_rules = doc.__svelte_rules || (doc.__svelte_rules = {});
+        if (!current_rules[name]) {
+            current_rules[name] = true;
+            stylesheet.insertRule(`@keyframes ${name} ${rule}`, stylesheet.cssRules.length);
+        }
+        const animation = node.style.animation || '';
+        node.style.animation = `${animation ? `${animation}, ` : ``}${name} ${duration}ms linear ${delay}ms 1 both`;
+        active += 1;
+        return name;
+    }
+    function delete_rule(node, name) {
+        const previous = (node.style.animation || '').split(', ');
+        const next = previous.filter(name
+            ? anim => anim.indexOf(name) < 0 // remove specific animation
+            : anim => anim.indexOf('__svelte') === -1 // remove all Svelte animations
+        );
+        const deleted = previous.length - next.length;
+        if (deleted) {
+            node.style.animation = next.join(', ');
+            active -= deleted;
+            if (!active)
+                clear_rules();
+        }
+    }
+    function clear_rules() {
+        raf(() => {
+            if (active)
+                return;
+            active_docs.forEach(doc => {
+                const stylesheet = doc.__svelte_stylesheet;
+                let i = stylesheet.cssRules.length;
+                while (i--)
+                    stylesheet.deleteRule(i);
+                doc.__svelte_rules = {};
+            });
+            active_docs.clear();
+        });
     }
 
     let current_component;
@@ -170,6 +270,20 @@
             $$.after_update.forEach(add_render_callback);
         }
     }
+
+    let promise;
+    function wait() {
+        if (!promise) {
+            promise = Promise.resolve();
+            promise.then(() => {
+                promise = null;
+            });
+        }
+        return promise;
+    }
+    function dispatch(node, direction, kind) {
+        node.dispatchEvent(custom_event(`${direction ? 'intro' : 'outro'}${kind}`));
+    }
     const outroing = new Set();
     let outros;
     function group_outros() {
@@ -206,6 +320,125 @@
             });
             block.o(local);
         }
+    }
+    const null_transition = { duration: 0 };
+    function create_in_transition(node, fn, params) {
+        let config = fn(node, params);
+        let running = false;
+        let animation_name;
+        let task;
+        let uid = 0;
+        function cleanup() {
+            if (animation_name)
+                delete_rule(node, animation_name);
+        }
+        function go() {
+            const { delay = 0, duration = 300, easing = identity, tick = noop, css } = config || null_transition;
+            if (css)
+                animation_name = create_rule(node, 0, 1, duration, delay, easing, css, uid++);
+            tick(0, 1);
+            const start_time = now() + delay;
+            const end_time = start_time + duration;
+            if (task)
+                task.abort();
+            running = true;
+            add_render_callback(() => dispatch(node, true, 'start'));
+            task = loop(now => {
+                if (running) {
+                    if (now >= end_time) {
+                        tick(1, 0);
+                        dispatch(node, true, 'end');
+                        cleanup();
+                        return running = false;
+                    }
+                    if (now >= start_time) {
+                        const t = easing((now - start_time) / duration);
+                        tick(t, 1 - t);
+                    }
+                }
+                return running;
+            });
+        }
+        let started = false;
+        return {
+            start() {
+                if (started)
+                    return;
+                delete_rule(node);
+                if (is_function(config)) {
+                    config = config();
+                    wait().then(go);
+                }
+                else {
+                    go();
+                }
+            },
+            invalidate() {
+                started = false;
+            },
+            end() {
+                if (running) {
+                    cleanup();
+                    running = false;
+                }
+            }
+        };
+    }
+    function create_out_transition(node, fn, params) {
+        let config = fn(node, params);
+        let running = true;
+        let animation_name;
+        const group = outros;
+        group.r += 1;
+        function go() {
+            const { delay = 0, duration = 300, easing = identity, tick = noop, css } = config || null_transition;
+            if (css)
+                animation_name = create_rule(node, 1, 0, duration, delay, easing, css);
+            const start_time = now() + delay;
+            const end_time = start_time + duration;
+            add_render_callback(() => dispatch(node, false, 'start'));
+            loop(now => {
+                if (running) {
+                    if (now >= end_time) {
+                        tick(0, 1);
+                        dispatch(node, false, 'end');
+                        if (!--group.r) {
+                            // this will result in `end()` being called,
+                            // so we don't need to clean up here
+                            run_all(group.c);
+                        }
+                        return false;
+                    }
+                    if (now >= start_time) {
+                        const t = easing((now - start_time) / duration);
+                        tick(1 - t, t);
+                    }
+                }
+                return running;
+            });
+        }
+        if (is_function(config)) {
+            wait().then(() => {
+                // @ts-ignore
+                config = config();
+                go();
+            });
+        }
+        else {
+            go();
+        }
+        return {
+            end(reset) {
+                if (reset && config.tick) {
+                    config.tick(1, 0);
+                }
+                if (running) {
+                    if (animation_name)
+                        delete_rule(node, animation_name);
+                    running = false;
+                }
+            }
+        };
     }
 
     function bind(component, name, callback) {
@@ -739,22 +972,50 @@
         },
     ];
 
-    /* src/components/utils/slider/slide.svelte generated by Svelte v3.24.1 */
+    function cubicOut(t) {
+        const f = t - 1.0;
+        return f * f * f + 1.0;
+    }
+    function quintInOut(t) {
+        if ((t *= 2) < 1)
+            return 0.5 * t * t * t * t * t;
+        return 0.5 * ((t -= 2) * t * t * t * t + 2);
+    }
 
+    function fly(node, { delay = 0, duration = 400, easing = cubicOut, x = 0, y = 0, opacity = 0 }) {
+        const style = getComputedStyle(node);
+        const target_opacity = +style.opacity;
+        const transform = style.transform === 'none' ? '' : style.transform;
+        const od = target_opacity * (1 - opacity);
+        return {
+            delay,
+            duration,
+            easing,
+            css: (t, u) => `
+			transform: ${transform} translate(${(1 - t) * x}px, ${(1 - t) * y}px);
+			opacity: ${target_opacity - (od * u)}`
+        };
+    }
+
+    /* src/components/utils/slider/slide.svelte generated by Svelte v3.24.1 */
     const file$2 = "src/components/utils/slider/slide.svelte";
 
-    function create_fragment$2(ctx) {
+    // (9:0) {#if data.active}
+    function create_if_block(ctx) {
     	let div3;
     	let div2;
     	let div0;
     	let h1;
-    	let t0_value = /*slide*/ ctx[0].name + "";
+    	let t0_value = /*data*/ ctx[0].name + "";
     	let t0;
     	let t1;
     	let div1;
     	let p;
-    	let t2_value = /*slide*/ ctx[0].description + "";
+    	let t2_value = /*data*/ ctx[0].description + "";
     	let t2;
+    	let div3_intro;
+    	let div3_outro;
+    	let current;
 
     	const block = {
     		c: function create() {
@@ -768,20 +1029,16 @@
     			p = element("p");
     			t2 = text(t2_value);
     			attr_dev(h1, "class", "m-auto text-4xl font-black");
-    			add_location(h1, file$2, 9, 12, 561);
+    			add_location(h1, file$2, 12, 12, 576);
     			attr_dev(div0, "class", "flex-1 flex");
-    			add_location(div0, file$2, 8, 8, 523);
-    			add_location(p, file$2, 12, 12, 679);
+    			add_location(div0, file$2, 11, 8, 538);
+    			add_location(p, file$2, 15, 12, 693);
     			attr_dev(div1, "class", "flex-1 flex");
-    			add_location(div1, file$2, 11, 8, 641);
+    			add_location(div1, file$2, 14, 8, 655);
     			attr_dev(div2, "class", "m-auto bg-blue-500 flex w-6/12 text-white p-4 rounded-md");
-    			add_location(div2, file$2, 7, 4, 444);
-    			attr_dev(div3, "class", "slide svelte-3w0tkv");
-    			toggle_class(div3, "active", /*slide*/ ctx[0].active);
-    			add_location(div3, file$2, 6, 0, 392);
-    		},
-    		l: function claim(nodes) {
-    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    			add_location(div2, file$2, 10, 4, 459);
+    			attr_dev(div3, "class", "slide svelte-l0anm2");
+    			add_location(div3, file$2, 9, 0, 316);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div3, anchor);
@@ -793,19 +1050,112 @@
     			append_dev(div2, div1);
     			append_dev(div1, p);
     			append_dev(p, t2);
+    			current = true;
     		},
-    		p: function update(ctx, [dirty]) {
-    			if (dirty & /*slide*/ 1 && t0_value !== (t0_value = /*slide*/ ctx[0].name + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*slide*/ 1 && t2_value !== (t2_value = /*slide*/ ctx[0].description + "")) set_data_dev(t2, t2_value);
+    		p: function update(ctx, dirty) {
+    			if ((!current || dirty & /*data*/ 1) && t0_value !== (t0_value = /*data*/ ctx[0].name + "")) set_data_dev(t0, t0_value);
+    			if ((!current || dirty & /*data*/ 1) && t2_value !== (t2_value = /*data*/ ctx[0].description + "")) set_data_dev(t2, t2_value);
+    		},
+    		i: function intro(local) {
+    			if (current) return;
 
-    			if (dirty & /*slide*/ 1) {
-    				toggle_class(div3, "active", /*slide*/ ctx[0].active);
-    			}
+    			add_render_callback(() => {
+    				if (div3_outro) div3_outro.end(1);
+
+    				if (!div3_intro) div3_intro = create_in_transition(div3, fly, {
+    					x: 200,
+    					delay: 200,
+    					duration: 500,
+    					easing: quintInOut
+    				});
+
+    				div3_intro.start();
+    			});
+
+    			current = true;
     		},
-    		i: noop,
-    		o: noop,
+    		o: function outro(local) {
+    			if (div3_intro) div3_intro.invalidate();
+
+    			div3_outro = create_out_transition(div3, fly, {
+    				x: -200,
+    				duration: 500,
+    				easing: quintInOut
+    			});
+
+    			current = false;
+    		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div3);
+    			if (detaching && div3_outro) div3_outro.end();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(9:0) {#if data.active}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$2(ctx) {
+    	let if_block_anchor;
+    	let current;
+    	let if_block = /*data*/ ctx[0].active && create_if_block(ctx);
+
+    	const block = {
+    		c: function create() {
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			if (if_block) if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    			current = true;
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (/*data*/ ctx[0].active) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+
+    					if (dirty & /*data*/ 1) {
+    						transition_in(if_block, 1);
+    					}
+    				} else {
+    					if_block = create_if_block(ctx);
+    					if_block.c();
+    					transition_in(if_block, 1);
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				group_outros();
+
+    				transition_out(if_block, 1, 1, () => {
+    					if_block = null;
+    				});
+
+    				check_outros();
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(if_block);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(if_block);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
     		}
     	};
 
@@ -821,8 +1171,8 @@
     }
 
     function instance$2($$self, $$props, $$invalidate) {
-    	let { slide } = $$props;
-    	const writable_props = ["slide"];
+    	let { data } = $$props;
+    	const writable_props = ["data"];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Slide> was created with unknown prop '${key}'`);
@@ -832,26 +1182,26 @@
     	validate_slots("Slide", $$slots, []);
 
     	$$self.$$set = $$props => {
-    		if ("slide" in $$props) $$invalidate(0, slide = $$props.slide);
+    		if ("data" in $$props) $$invalidate(0, data = $$props.data);
     	};
 
-    	$$self.$capture_state = () => ({ slide });
+    	$$self.$capture_state = () => ({ fly, quintInOut, data });
 
     	$$self.$inject_state = $$props => {
-    		if ("slide" in $$props) $$invalidate(0, slide = $$props.slide);
+    		if ("data" in $$props) $$invalidate(0, data = $$props.data);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [slide];
+    	return [data];
     }
 
     class Slide extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, { slide: 0 });
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, { data: 0 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -863,16 +1213,16 @@
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*slide*/ ctx[0] === undefined && !("slide" in props)) {
-    			console.warn("<Slide> was created without expected prop 'slide'");
+    		if (/*data*/ ctx[0] === undefined && !("data" in props)) {
+    			console.warn("<Slide> was created without expected prop 'data'");
     		}
     	}
 
-    	get slide() {
+    	get data() {
     		throw new Error("<Slide>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
-    	set slide(value) {
+    	set data(value) {
     		throw new Error("<Slide>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
@@ -892,7 +1242,7 @@
     	let current;
 
     	slide = new Slide({
-    			props: { slide: /*slide*/ ctx[8] },
+    			props: { data: /*slide*/ ctx[8] },
     			$$inline: true
     		});
 
@@ -906,7 +1256,7 @@
     		},
     		p: function update(ctx, dirty) {
     			const slide_changes = {};
-    			if (dirty & /*buffer*/ 1) slide_changes.slide = /*slide*/ ctx[8];
+    			if (dirty & /*buffer*/ 1) slide_changes.data = /*slide*/ ctx[8];
     			slide.$set(slide_changes);
     		},
     		i: function intro(local) {
@@ -971,14 +1321,14 @@
     				each_blocks[i].c();
     			}
 
-    			attr_dev(button0, "class", "left svelte-1r2mnm6");
-    			add_location(button0, file$3, 45, 8, 1749);
-    			attr_dev(button1, "class", "right svelte-1r2mnm6");
-    			add_location(button1, file$3, 46, 8, 1807);
-    			attr_dev(div0, "class", "button-group svelte-1r2mnm6");
-    			add_location(div0, file$3, 44, 4, 1714);
-    			attr_dev(div1, "class", "slide-container svelte-1r2mnm6");
-    			add_location(div1, file$3, 43, 0, 1680);
+    			attr_dev(button0, "class", "left svelte-dv28mk");
+    			add_location(button0, file$3, 45, 8, 1605);
+    			attr_dev(button1, "class", "right svelte-dv28mk");
+    			add_location(button1, file$3, 46, 8, 1663);
+    			attr_dev(div0, "class", "absolute inset-0 flex items-center justify-between");
+    			add_location(div0, file$3, 44, 4, 1532);
+    			attr_dev(div1, "class", "m-auto w-screen h-64 overflow-hidden relative");
+    			add_location(div1, file$3, 43, 0, 1468);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
