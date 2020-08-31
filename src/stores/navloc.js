@@ -5,6 +5,7 @@ export let location = writable(
         '#top':true,
         '#about':false,
         '#work':false,
+        '#projects':false,
         '#contact':false,
     }
 );

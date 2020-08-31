@@ -2,24 +2,47 @@
 import Hamburger from './utils/Hamburger.svelte';
 import { location } from '../stores/navloc.js';
 let menuOpen = false;
+
+let menuItems = [
+    {
+        'name':'Home',
+        'link':'#top',
+    },
+    {
+        'name':'About',
+        'link':'#about',
+    },
+    {
+        'name':'Work',
+        'link':'#projects',
+    },
+    {
+        'name':'Contact',
+        'link':'#contact',
+    }
+]
+
 </script>
 
 <style lang="text/postcss">
 .nav-container {
-    @apply border-blue-500 transition-all duration-500 ease-in-out;
+    @apply border-transparent transition-all duration-500 ease-in-out;
 }
-.nav-container:hover ,.nav-container.active{
+.nav-container:hover{
+    @apply border-purple-500;
+}
+.nav-container.active{
     @apply border-red-500;
 }
 .nav-container > a {
-    @apply text-gray-600;
+    @apply text-white;
     text-decoration: none;
 }
 .nav-container.active > a{
     @apply text-red-400;
 }
 .w-drawer{
-    @apply w-1/4;
+    @apply w-1/2;
 }
 </style>
 <div class="hidden w-0 w-drawer">
@@ -32,8 +55,8 @@ let menuOpen = false;
     </div>
 </div>
 <div class="
-    fixed lg:flex top-0 right-0 lg:h-auto lg:w-screen 
-    bg-white shadow-md rounded-b 
+    fixed lg:flex top-0 right-0 h-screen lg:h-auto lg:w-screen z-30
+    bg-blue-400 lg:bg-transparent rounded-b 
     transition-all duration-300 ease-in-out 
     overflow-hidden"
     class:w-0='{!menuOpen}'
@@ -41,25 +64,16 @@ let menuOpen = false;
 >
     <div class="h-12 w-full"></div>
     <ol class="lg:flex text-center lg:m-auto">
-        <li class:active={$location['#top']}
-            class="nav-container border-l-4 lg:border-b-4 lg:border-l-0 py-6 lg:px-6">
-            <a href='#top'>Home</a>
+        {#each menuItems as menuItem}
+        <li class:active={$location[menuItem.link]}
+            class="nav-container border-l-2 lg:border-b-2 lg:border-l-0 py-6 lg:py-2 lg:px-6">
+            <a href='{menuItem.link}'>{menuItem.name}</a>
         </li>
-        <li class:active={$location['#about']}
-            class="nav-container border-l-4 lg:border-b-4 lg:border-l-0 py-6 lg:px-6">
-            <a href='#about'>About</a>
-        </li>
-        <li class:active={$location['#work']}
-            class="nav-container border-l-4 lg:border-b-4 lg:border-l-0 py-6 lg:px-6">
-            <a href='#work'>Works</a>
-        </li>
-        <li class:active={$location['#contact']}
-            class="nav-container border-l-4 lg:border-b-4 lg:border-l-0 py-6 lg:px-6">
-            <a href='#contact'>contact</a>
-        </li>
-        <li
-            class="nav-container border-l-4 lg:border-b-4 lg:border-l-0 py-6 lg:px-6">
-            <a href='https://docs.google.com/document/d/1ZRp1OYUPWxxOMaYpG4tjT4UsIAhNLra4AzoIYUm18lI/export?format=pdf'>Resume</a>
+        {/each}
+        <li class="nav-container border-l-2 lg:border-b-2 lg:border-l-0 py-6 lg:py-2 lg:px-6">
+            <a href='https://docs.google.com/document/d/1ZRp1OYUPWxxOMaYpG4tjT4UsIAhNLra4AzoIYUm18lI/export?format=pdf'>
+            Resume
+            </a>
         </li>
     </ol>
 </div>
