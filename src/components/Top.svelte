@@ -21,12 +21,15 @@ onMount(async ()=>{
 </script>
 
 <style lang="text/postcss">
+#top {
+    background-color: inherit;
+}
 </style>
 
-<div id='top' class="flex w-screen bg-blue-300 h-screen">
-    <div class="m-auto text-center text-white w-7/12">
-        <h1 class="font-bold text-5xl">John Abraham</h1>
-        <p>A Backend developer who loves to solve problems. (Not the indian actor!)
+<div id='top' class="flex w-screen h-screen">
+    <div class="m-auto text-center w-7/12">
+        <h1 class="font-bold text-5xl" style="color:var(--accent-color)">John Abraham</h1>
+        <p class="text-lg">A Backend developer who loves to solve problems. (Not the indian actor!)
         </p>
     </div>
 </div>

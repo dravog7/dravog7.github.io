@@ -25,18 +25,18 @@ function sub(){
     transed = true;
 }
 
-// function automatic(){
-//     if(!transed)
-//         add();
-//     transed = false;
-// }
+function automatic(){
+    if(!transed)
+        add();
+    transed = false;
+}
 
-// onMount(function(){
-//     interval = setInterval(automatic,10000);
-// })
-// onDestroy(function(){
-//     clearInterval(interval);
-// })
+onMount(function(){
+    interval = setInterval(automatic,10000);
+})
+onDestroy(function(){
+    clearInterval(interval);
+})
 </script>
 <style lang="text/postcss">
 .left, .right{
@@ -46,7 +46,7 @@ function sub(){
     @apply outline-none;
 }
 .left:hover,.right:hover{
-    @apply border-blue-300 text-black;
+    color: var(--accent-color);
 }
 </style>
 

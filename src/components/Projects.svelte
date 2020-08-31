@@ -24,10 +24,14 @@ onMount(async ()=>{
 </script>
 
 <style lang="text/postcss">
+#projects {
+    background-color: inherit;
+}
 </style>
 
-<div id='projects' class="flex bg-blue-300 w-screen h-screen">
-    <div class="m-auto w-11/12">
+<div id='projects' class="flex flex-col bg-transparent w-screen h-screen py-24">
+    <h1 class="mx-auto font-bold text-4xl">Projects</h1>
+    <div class="mx-auto w-11/12 flex-1">
         <ProjectList/>
     </div>
 </div>

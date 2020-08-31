@@ -24,18 +24,20 @@ onMount(async ()=>{
 </script>
 
 <style lang="text/postcss">
+#about {
+    background-color: inherit;
+}
 </style>
 
 <div id='about'
 class="flex flex-col
     w-11/12 h-screen mx-auto text-center py-24
-    bg-blue-300 text-white rounded-lg
+    rounded-lg
     hover:shadow-md
     transition-all duration-500 ease-in-out"
-class:bg-blue-400={onMe}
 >
     <h1 class="w-full font-bold text-4xl">About</h1>
-    <p class="w-9/12 m-auto">
+    <p class="w-9/12 m-auto text-md">
     Lorem ipsum dolor sit amet, consectetur adipisicing elit.
     Suscipit quis iusto quo reprehenderit. Excepturi cum sit 
     inventore dignissimos aperiam culpa non eos placeat aut 

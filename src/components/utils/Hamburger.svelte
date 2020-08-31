@@ -6,11 +6,12 @@ export let active = false;
 .hamburger-inner,
 .hamburger-inner::before,
 .hamburger-inner::after{
-  @apply bg-white;
+  background-color: var(--sec-color);
 }
 .hamburger.is-active .hamburger-inner::before,
 .hamburger.is-active .hamburger-inner::after{
-  @apply bg-red-400;
+  background-color: var(--accent-color);
+  box-shadow: 0px 0px 1px var(--accent-glow);
 }
 </style>
 

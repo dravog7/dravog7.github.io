@@ -29,20 +29,24 @@ let menuItems = [
     @apply border-transparent transition-all duration-500 ease-in-out;
 }
 .nav-container:hover{
-    @apply border-purple-500;
+    border-color: var(--accent-color);
 }
 .nav-container.active{
-    @apply border-red-500;
+    border-color: var(--accent-color);
 }
 .nav-container > a {
-    @apply text-white;
-    text-decoration: none;
+    color: var(--sec-color)!important;
+    text-decoration: none!important;
 }
 .nav-container.active > a{
-    @apply text-red-400;
+    color: var(--accent-color)!important;
+    text-shadow: 0px 0px 1px var(--accent-glow);
 }
 .w-drawer{
     @apply w-1/2;
+}
+.bg-inherit {
+    background-color: inherit;
 }
 </style>
 <div class="hidden w-0 w-drawer">
@@ -56,7 +60,7 @@ let menuItems = [
 </div>
 <div class="
     fixed lg:flex top-0 right-0 h-screen lg:h-auto lg:w-screen z-30
-    bg-blue-400 lg:bg-transparent rounded-b 
+    bg-inherit lg:bg-transparent rounded-b 
     transition-all duration-300 ease-in-out 
     overflow-hidden"
     class:w-0='{!menuOpen}'

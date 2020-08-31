@@ -2,17 +2,17 @@ const lorem = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem v
 const data = [
     {
         "name":"MegaIndexOf",
-        "description":lorem,
+        "description":"A search engine for a collection of television series video files",
         "github link":""
     },
     {
         "name":"Save-CLI",
-        "description":lorem+'a',
+        "description":"A multiconnection concurrent downloader on CLI",
         "github link":""
     },
     {
         "name":"EXecutioner",
-        "description":lorem+'aa',
+        "description":"A python library to execute untrusted code using known sandboxes",
         "github link":""
     },
 ]

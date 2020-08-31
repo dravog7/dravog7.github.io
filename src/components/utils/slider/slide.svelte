@@ -1,6 +1,6 @@
 <script>
 import { fly } from 'svelte/transition';
-import { quintInOut } from 'svelte/easing';
+import { cubicOut } from 'svelte/easing';
 export let data;
 </script>
 
@@ -11,13 +11,15 @@ export let data;
 }
 </style>
 {#if data.active}
-<div in:fly="{{x:200,delay:200, duration: 500, easing:quintInOut }}" out:fly="{{x:-200, duration: 500,easing:quintInOut }}" class="slide">
-    <div class='m-auto bg-blue-500 flex flex-col lg:flex-row h-64 lg:w-9/12 text-white p-4 rounded-md'>
-        <div class="flex-1 flex px-4">
-            <h1 class="m-auto text-4xl font-black">{data.name}</h1>
+<div 
+    class="slide"
+>
+    <div class='m-auto flex flex-col lg:flex-row h-64 w-11/12 lg:w-8/12 p-4 rounded-md'>
+        <div class="flex-1 flex px-4" in:fly="{{x:-100, duration: 500, easing:cubicOut }}">
+            <h1 class="my-auto text-4xl font-black">{data.name}</h1>
         </div>
-        <div class="flex-1 flex">
-            <p>{data.description}</p>
+        <div class="flex-1 flex" in:fly="{{x:100,delay:300, duration: 350, easing:cubicOut }}">
+            <p class="text-lg lg:text-3xl">{data.description}</p>
         </div>
     </div>
 </div>

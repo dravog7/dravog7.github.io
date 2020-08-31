@@ -119,6 +119,9 @@
     function children(element) {
         return Array.from(element.childNodes);
     }
+    function set_style(node, key, value, important) {
+        node.style.setProperty(key, value, important ? 'important' : '');
+    }
     function toggle_class(element, name, toggle) {
         element.classList[toggle ? 'add' : 'remove'](name);
     }
@@ -379,62 +382,6 @@
             end() {
                 if (running) {
                     cleanup();
-                    running = false;
-                }
-            }
-        };
-    }
-    function create_out_transition(node, fn, params) {
-        let config = fn(node, params);
-        let running = true;
-        let animation_name;
-        const group = outros;
-        group.r += 1;
-        function go() {
-            const { delay = 0, duration = 300, easing = identity, tick = noop, css } = config || null_transition;
-            if (css)
-                animation_name = create_rule(node, 1, 0, duration, delay, easing, css);
-            const start_time = now() + delay;
-            const end_time = start_time + duration;
-            add_render_callback(() => dispatch(node, false, 'start'));
-            loop(now => {
-                if (running) {
-                    if (now >= end_time) {
-                        tick(0, 1);
-                        dispatch(node, false, 'end');
-                        if (!--group.r) {
-                            // this will result in `end()` being called,
-                            // so we don't need to clean up here
-                            run_all(group.c);
-                        }
-                        return false;
-                    }
-                    if (now >= start_time) {
-                        const t = easing((now - start_time) / duration);
-                        tick(1 - t, t);
-                    }
-                }
-                return running;
-            });
-        }
-        if (is_function(config)) {
-            wait().then(() => {
-                // @ts-ignore
-                config = config();
-                go();
-            });
-        }
-        else {
-            go();
-        }
-        return {
-            end(reset) {
-                if (reset && config.tick) {
-                    config.tick(1, 0);
-                }
-                if (running) {
-                    if (animation_name)
-                        delete_rule(node, animation_name);
                     running = false;
                 }
             }
@@ -749,13 +696,15 @@
     			p = element("p");
     			p.textContent = "A Backend developer who loves to solve problems. (Not the indian actor!)";
     			attr_dev(h1, "class", "font-bold text-5xl");
-    			add_location(h1, file, 27, 8, 650);
-    			add_location(p, file, 28, 8, 707);
-    			attr_dev(div0, "class", "m-auto text-center text-white w-7/12");
-    			add_location(div0, file, 26, 4, 591);
+    			set_style(h1, "color", "var(--accent-color)");
+    			add_location(h1, file, 27, 8, 657);
+    			attr_dev(p, "class", "text-lg");
+    			add_location(p, file, 28, 8, 748);
+    			attr_dev(div0, "class", "m-auto text-center w-7/12");
+    			add_location(div0, file, 26, 4, 609);
     			attr_dev(div1, "id", "top");
-    			attr_dev(div1, "class", "flex w-screen bg-blue-300 h-screen");
-    			add_location(div1, file, 25, 0, 529);
+    			attr_dev(div1, "class", "flex w-screen h-screen svelte-1qxb6ji");
+    			add_location(div1, file, 25, 0, 559);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -845,13 +794,12 @@
     			p = element("p");
     			p.textContent = "Lorem ipsum dolor sit amet, consectetur adipisicing elit.\n    Suscipit quis iusto quo reprehenderit. Excepturi cum sit \n    inventore dignissimos aperiam culpa non eos placeat aut \n    animi? Omnis facere optio minima quod. Lorem ipsum dolor \n    sit amet consectetur adipisicing elit. Placeat rem dignissimos\n    expedita amet, quaerat dolor itaque iusto! Ipsa, qui quod \n    porro voluptates facere tempore eveniet doloribus voluptate \n    dolor perspiciatis autem!";
     			attr_dev(h1, "class", "w-full font-bold text-4xl");
-    			add_location(h1, file$1, 36, 4, 804);
-    			attr_dev(p, "class", "w-9/12 m-auto");
-    			add_location(p, file$1, 37, 4, 857);
+    			add_location(h1, file$1, 35, 4, 788);
+    			attr_dev(p, "class", "w-9/12 m-auto text-md");
+    			add_location(p, file$1, 36, 4, 841);
     			attr_dev(div, "id", "about");
-    			attr_dev(div, "class", "flex flex-col\n    w-11/12 h-screen mx-auto text-center py-24\n    bg-blue-300 text-white rounded-lg\n    hover:shadow-md\n    transition-all duration-500 ease-in-out");
-    			toggle_class(div, "bg-blue-400", /*onMe*/ ctx[0]);
-    			add_location(div, file$1, 28, 0, 586);
+    			attr_dev(div, "class", "flex flex-col\n    w-11/12 h-screen mx-auto text-center py-24\n    rounded-lg\n    hover:shadow-md\n    transition-all duration-500 ease-in-out svelte-blubyu");
+    			add_location(div, file$1, 28, 0, 618);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -862,11 +810,7 @@
     			append_dev(div, t1);
     			append_dev(div, p);
     		},
-    		p: function update(ctx, [dirty]) {
-    			if (dirty & /*onMe*/ 1) {
-    				toggle_class(div, "bg-blue-400", /*onMe*/ ctx[0]);
-    			}
-    		},
+    		p: noop,
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
@@ -923,7 +867,7 @@
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("onMe" in $$props) $$invalidate(0, onMe = $$props.onMe);
+    		if ("onMe" in $$props) onMe = $$props.onMe;
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -932,11 +876,11 @@
 
     	$$self.$$.update = () => {
     		if ($$self.$$.dirty & /*$location*/ 2) {
-    			 $$invalidate(0, onMe = $location["#about"]);
+    			 onMe = $location["#about"];
     		}
     	};
 
-    	return [onMe];
+    	return [];
     }
 
     class About extends SvelteComponentDev {
@@ -953,21 +897,20 @@
     	}
     }
 
-    const lorem = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem vel libero rerum quo aliquam quidem aspernatur tempore excepturi provident suscipit ab itaque veritatis ullam, quia nesciunt tempora voluptatem facilis. Rem.';
     const data = [
         {
             "name":"MegaIndexOf",
-            "description":lorem,
+            "description":"A search engine for a collection of television series video files",
             "github link":""
         },
         {
             "name":"Save-CLI",
-            "description":lorem+'a',
+            "description":"A multiconnection concurrent downloader on CLI",
             "github link":""
         },
         {
             "name":"EXecutioner",
-            "description":lorem+'aa',
+            "description":"A python library to execute untrusted code using known sandboxes",
             "github link":""
         },
     ];
@@ -975,11 +918,6 @@
     function cubicOut(t) {
         const f = t - 1.0;
         return f * f * f + 1.0;
-    }
-    function quintInOut(t) {
-        if ((t *= 2) < 1)
-            return 0.5 * t * t * t * t * t;
-        return 0.5 * ((t -= 2) * t * t * t * t + 2);
     }
 
     function fly(node, { delay = 0, duration = 400, easing = cubicOut, x = 0, y = 0, opacity = 0 }) {
@@ -1008,14 +946,13 @@
     	let h1;
     	let t0_value = /*data*/ ctx[0].name + "";
     	let t0;
+    	let div0_intro;
     	let t1;
     	let div1;
     	let p;
     	let t2_value = /*data*/ ctx[0].description + "";
     	let t2;
-    	let div3_intro;
-    	let div3_outro;
-    	let current;
+    	let div1_intro;
 
     	const block = {
     		c: function create() {
@@ -1028,17 +965,18 @@
     			div1 = element("div");
     			p = element("p");
     			t2 = text(t2_value);
-    			attr_dev(h1, "class", "m-auto text-4xl font-black");
-    			add_location(h1, file$2, 12, 12, 610);
+    			attr_dev(h1, "class", "my-auto text-4xl font-black");
+    			add_location(h1, file$2, 14, 12, 533);
     			attr_dev(div0, "class", "flex-1 flex px-4");
-    			add_location(div0, file$2, 11, 8, 567);
-    			add_location(p, file$2, 15, 12, 727);
+    			add_location(div0, file$2, 13, 8, 437);
+    			attr_dev(p, "class", "text-lg lg:text-3xl");
+    			add_location(p, file$2, 17, 12, 713);
     			attr_dev(div1, "class", "flex-1 flex");
-    			add_location(div1, file$2, 14, 8, 689);
-    			attr_dev(div2, "class", "m-auto bg-blue-500 flex flex-col lg:flex-row h-64 lg:w-9/12 text-white p-4 rounded-md");
-    			add_location(div2, file$2, 10, 4, 459);
+    			add_location(div1, file$2, 16, 8, 613);
+    			attr_dev(div2, "class", "m-auto flex flex-col lg:flex-row h-64 w-11/12 lg:w-8/12 p-4 rounded-md");
+    			add_location(div2, file$2, 12, 4, 344);
     			attr_dev(div3, "class", "slide svelte-l0anm2");
-    			add_location(div3, file$2, 9, 0, 316);
+    			add_location(div3, file$2, 9, 0, 314);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div3, anchor);
@@ -1050,44 +988,35 @@
     			append_dev(div2, div1);
     			append_dev(div1, p);
     			append_dev(p, t2);
-    			current = true;
     		},
     		p: function update(ctx, dirty) {
-    			if ((!current || dirty & /*data*/ 1) && t0_value !== (t0_value = /*data*/ ctx[0].name + "")) set_data_dev(t0, t0_value);
-    			if ((!current || dirty & /*data*/ 1) && t2_value !== (t2_value = /*data*/ ctx[0].description + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*data*/ 1 && t0_value !== (t0_value = /*data*/ ctx[0].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*data*/ 1 && t2_value !== (t2_value = /*data*/ ctx[0].description + "")) set_data_dev(t2, t2_value);
     		},
     		i: function intro(local) {
-    			if (current) return;
-
-    			add_render_callback(() => {
-    				if (div3_outro) div3_outro.end(1);
-
-    				if (!div3_intro) div3_intro = create_in_transition(div3, fly, {
-    					x: 200,
-    					delay: 200,
-    					duration: 500,
-    					easing: quintInOut
+    			if (!div0_intro) {
+    				add_render_callback(() => {
+    					div0_intro = create_in_transition(div0, fly, { x: -100, duration: 500, easing: cubicOut });
+    					div0_intro.start();
     				});
+    			}
 
-    				div3_intro.start();
-    			});
+    			if (!div1_intro) {
+    				add_render_callback(() => {
+    					div1_intro = create_in_transition(div1, fly, {
+    						x: 100,
+    						delay: 300,
+    						duration: 350,
+    						easing: cubicOut
+    					});
 
-    			current = true;
+    					div1_intro.start();
+    				});
+    			}
     		},
-    		o: function outro(local) {
-    			if (div3_intro) div3_intro.invalidate();
-
-    			div3_outro = create_out_transition(div3, fly, {
-    				x: -200,
-    				duration: 500,
-    				easing: quintInOut
-    			});
-
-    			current = false;
-    		},
+    		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div3);
-    			if (detaching && div3_outro) div3_outro.end();
     		}
     	};
 
@@ -1104,7 +1033,6 @@
 
     function create_fragment$2(ctx) {
     	let if_block_anchor;
-    	let current;
     	let if_block = /*data*/ ctx[0].active && create_if_block(ctx);
 
     	const block = {
@@ -1118,7 +1046,6 @@
     		m: function mount(target, anchor) {
     			if (if_block) if_block.m(target, anchor);
     			insert_dev(target, if_block_anchor, anchor);
-    			current = true;
     		},
     		p: function update(ctx, [dirty]) {
     			if (/*data*/ ctx[0].active) {
@@ -1135,24 +1062,14 @@
     					if_block.m(if_block_anchor.parentNode, if_block_anchor);
     				}
     			} else if (if_block) {
-    				group_outros();
-
-    				transition_out(if_block, 1, 1, () => {
-    					if_block = null;
-    				});
-
-    				check_outros();
+    				if_block.d(1);
+    				if_block = null;
     			}
     		},
     		i: function intro(local) {
-    			if (current) return;
     			transition_in(if_block);
-    			current = true;
     		},
-    		o: function outro(local) {
-    			transition_out(if_block);
-    			current = false;
-    		},
+    		o: noop,
     		d: function destroy(detaching) {
     			if (if_block) if_block.d(detaching);
     			if (detaching) detach_dev(if_block_anchor);
@@ -1185,7 +1102,7 @@
     		if ("data" in $$props) $$invalidate(0, data = $$props.data);
     	};
 
-    	$$self.$capture_state = () => ({ fly, quintInOut, data });
+    	$$self.$capture_state = () => ({ fly, cubicOut, data });
 
     	$$self.$inject_state = $$props => {
     		if ("data" in $$props) $$invalidate(0, data = $$props.data);
@@ -1232,7 +1149,7 @@
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[7] = list[i];
+    	child_ctx[8] = list[i];
     	return child_ctx;
     }
 
@@ -1242,7 +1159,7 @@
     	let current;
 
     	slide = new Slide({
-    			props: { data: /*slide*/ ctx[7] },
+    			props: { data: /*slide*/ ctx[8] },
     			$$inline: true
     		});
 
@@ -1256,7 +1173,7 @@
     		},
     		p: function update(ctx, dirty) {
     			const slide_changes = {};
-    			if (dirty & /*buffer*/ 1) slide_changes.data = /*slide*/ ctx[7];
+    			if (dirty & /*buffer*/ 1) slide_changes.data = /*slide*/ ctx[8];
     			slide.$set(slide_changes);
     		},
     		i: function intro(local) {
@@ -1321,14 +1238,14 @@
     				each_blocks[i].c();
     			}
 
-    			attr_dev(button0, "class", "left svelte-k28laf");
-    			add_location(button0, file$3, 45, 8, 1424);
-    			attr_dev(button1, "class", "right svelte-k28laf");
-    			add_location(button1, file$3, 46, 8, 1482);
+    			attr_dev(button0, "class", "left svelte-12qry39");
+    			add_location(button0, file$3, 45, 8, 1258);
+    			attr_dev(button1, "class", "right svelte-12qry39");
+    			add_location(button1, file$3, 46, 8, 1316);
     			attr_dev(div0, "class", "absolute inset-0 flex items-center justify-between");
-    			add_location(div0, file$3, 44, 4, 1351);
+    			add_location(div0, file$3, 44, 4, 1185);
     			attr_dev(div1, "class", "m-auto w-screen h-64 overflow-hidden relative");
-    			add_location(div1, file$3, 43, 0, 1287);
+    			add_location(div1, file$3, 43, 0, 1121);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1445,6 +1362,19 @@
     		transed = true;
     	}
 
+    	function automatic() {
+    		if (!transed) add();
+    		transed = false;
+    	}
+
+    	onMount(function () {
+    		interval = setInterval(automatic, 10000);
+    	});
+
+    	onDestroy(function () {
+    		clearInterval(interval);
+    	});
+
     	const writable_props = ["Data"];
 
     	Object.keys($$props).forEach(key => {
@@ -1468,7 +1398,8 @@
     		interval,
     		transed,
     		add,
-    		sub
+    		sub,
+    		automatic
     	});
 
     	$$self.$inject_state = $$props => {
@@ -1598,6 +1529,8 @@
 
     function create_fragment$5(ctx) {
     	let div1;
+    	let h1;
+    	let t1;
     	let div0;
     	let projectlist;
     	let current;
@@ -1606,19 +1539,26 @@
     	const block = {
     		c: function create() {
     			div1 = element("div");
+    			h1 = element("h1");
+    			h1.textContent = "Projects";
+    			t1 = space();
     			div0 = element("div");
     			create_component(projectlist.$$.fragment);
-    			attr_dev(div0, "class", "m-auto w-11/12");
-    			add_location(div0, file$5, 29, 4, 672);
+    			attr_dev(h1, "class", "mx-auto font-bold text-4xl");
+    			add_location(h1, file$5, 29, 4, 725);
+    			attr_dev(div0, "class", "mx-auto w-11/12 flex-1");
+    			add_location(div0, file$5, 30, 4, 782);
     			attr_dev(div1, "id", "projects");
-    			attr_dev(div1, "class", "flex bg-blue-300 w-screen h-screen");
-    			add_location(div1, file$5, 28, 0, 605);
+    			attr_dev(div1, "class", "flex flex-col bg-transparent w-screen h-screen py-24 svelte-lzd1ze");
+    			add_location(div1, file$5, 28, 0, 640);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
+    			append_dev(div1, h1);
+    			append_dev(div1, t1);
     			append_dev(div1, div0);
     			mount_component(projectlist, div0, null);
     			current = true;
@@ -1821,7 +1761,6 @@
     }
 
     function instance$7($$self, $$props, $$invalidate) {
-    	document.body.classList.add("bg-blue-300");
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
@@ -1864,14 +1803,14 @@
     			button = element("button");
     			span1 = element("span");
     			span0 = element("span");
-    			attr_dev(span0, "class", "hamburger-inner svelte-10u8132");
-    			add_location(span0, file$6, 14, 4, 23159);
-    			attr_dev(span1, "class", "hamburger-box svelte-10u8132");
-    			add_location(span1, file$6, 13, 2, 23126);
-    			attr_dev(button, "class", "w-full hamburger focus:outline-none hamburger--emphatic svelte-10u8132");
+    			attr_dev(span0, "class", "hamburger-inner svelte-795odd");
+    			add_location(span0, file$6, 14, 4, 23085);
+    			attr_dev(span1, "class", "hamburger-box svelte-795odd");
+    			add_location(span1, file$6, 13, 2, 23052);
+    			attr_dev(button, "class", "w-full hamburger focus:outline-none hamburger--emphatic svelte-795odd");
     			attr_dev(button, "type", "button");
     			toggle_class(button, "is-active", /*active*/ ctx[0]);
-    			add_location(button, file$6, 12, 0, 22981);
+    			add_location(button, file$6, 12, 0, 22907);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1985,11 +1924,11 @@
     			a = element("a");
     			t = text(t_value);
     			attr_dev(a, "href", a_href_value = /*menuItem*/ ctx[4].link);
-    			attr_dev(a, "class", "svelte-7yeww3");
-    			add_location(a, file$7, 50, 12, 1893);
-    			attr_dev(li, "class", "nav-container border-l-2 lg:border-b-2 lg:border-l-0 py-6 lg:py-2 lg:px-6 svelte-7yeww3");
+    			attr_dev(a, "class", "svelte-y8kdsf");
+    			add_location(a, file$7, 50, 12, 1747);
+    			attr_dev(li, "class", "nav-container border-l-2 lg:border-b-2 lg:border-l-0 py-6 lg:py-2 lg:px-6 svelte-y8kdsf");
     			toggle_class(li, "active", /*$location*/ ctx[1][/*menuItem*/ ctx[4].link]);
-    			add_location(li, file$7, 48, 8, 1742);
+    			add_location(li, file$7, 48, 8, 1596);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
@@ -2076,25 +2015,25 @@
     			li = element("li");
     			a = element("a");
     			a.textContent = "Resume";
-    			attr_dev(div0, "class", "hidden w-0 w-drawer svelte-7yeww3");
-    			add_location(div0, file$7, 28, 0, 1102);
+    			attr_dev(div0, "class", "hidden w-0 w-drawer svelte-y8kdsf");
+    			add_location(div0, file$7, 28, 0, 957);
     			attr_dev(div1, "class", "flex m-auto");
-    			add_location(div1, file$7, 33, 4, 1267);
+    			add_location(div1, file$7, 33, 4, 1122);
     			attr_dev(div2, "class", "flex fixed right-0 top-0 pr-1 lg:hidden z-40");
-    			add_location(div2, file$7, 32, 0, 1204);
+    			add_location(div2, file$7, 32, 0, 1059);
     			attr_dev(div3, "class", "h-12 w-full");
-    			add_location(div3, file$7, 45, 4, 1617);
+    			add_location(div3, file$7, 45, 4, 1471);
     			attr_dev(a, "href", "https://docs.google.com/document/d/1ZRp1OYUPWxxOMaYpG4tjT4UsIAhNLra4AzoIYUm18lI/export?format=pdf");
-    			attr_dev(a, "class", "svelte-7yeww3");
-    			add_location(a, file$7, 54, 12, 2076);
-    			attr_dev(li, "class", "nav-container border-l-2 lg:border-b-2 lg:border-l-0 py-6 lg:py-2 lg:px-6 svelte-7yeww3");
-    			add_location(li, file$7, 53, 8, 1977);
+    			attr_dev(a, "class", "svelte-y8kdsf");
+    			add_location(a, file$7, 54, 12, 1930);
+    			attr_dev(li, "class", "nav-container border-l-2 lg:border-b-2 lg:border-l-0 py-6 lg:py-2 lg:px-6 svelte-y8kdsf");
+    			add_location(li, file$7, 53, 8, 1831);
     			attr_dev(ol, "class", "lg:flex text-center lg:m-auto");
-    			add_location(ol, file$7, 46, 4, 1653);
-    			attr_dev(div4, "class", "\n    fixed lg:flex top-0 right-0 h-screen lg:h-auto lg:w-screen z-30\n    bg-blue-400 lg:bg-transparent rounded-b \n    transition-all duration-300 ease-in-out \n    overflow-hidden svelte-7yeww3");
+    			add_location(ol, file$7, 46, 4, 1507);
+    			attr_dev(div4, "class", "\n    fixed lg:flex top-0 right-0 h-screen lg:h-auto lg:w-screen z-30\n    bg-inherit lg:bg-transparent rounded-b \n    transition-all duration-300 ease-in-out \n    overflow-hidden svelte-y8kdsf");
     			toggle_class(div4, "w-0", !/*menuOpen*/ ctx[0]);
     			toggle_class(div4, "w-drawer", /*menuOpen*/ ctx[0]);
-    			add_location(div4, file$7, 37, 0, 1359);
+    			add_location(div4, file$7, 37, 0, 1214);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
