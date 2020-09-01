@@ -474,6 +474,62 @@
             }
         };
     }
+    function create_out_transition(node, fn, params) {
+        let config = fn(node, params);
+        let running = true;
+        let animation_name;
+        const group = outros;
+        group.r += 1;
+        function go() {
+            const { delay = 0, duration = 300, easing = identity, tick = noop, css } = config || null_transition;
+            if (css)
+                animation_name = create_rule(node, 1, 0, duration, delay, easing, css);
+            const start_time = now() + delay;
+            const end_time = start_time + duration;
+            add_render_callback(() => dispatch(node, false, 'start'));
+            loop(now => {
+                if (running) {
+                    if (now >= end_time) {
+                        tick(0, 1);
+                        dispatch(node, false, 'end');
+                        if (!--group.r) {
+                            // this will result in `end()` being called,
+                            // so we don't need to clean up here
+                            run_all(group.c);
+                        }
+                        return false;
+                    }
+                    if (now >= start_time) {
+                        const t = easing((now - start_time) / duration);
+                        tick(1 - t, t);
+                    }
+                }
+                return running;
+            });
+        }
+        if (is_function(config)) {
+            wait().then(() => {
+                // @ts-ignore
+                config = config();
+                go();
+            });
+        }
+        else {
+            go();
+        }
+        return {
+            end(reset) {
+                if (reset && config.tick) {
+                    config.tick(1, 0);
+                }
+                if (running) {
+                    if (animation_name)
+                        delete_rule(node, animation_name);
+                    running = false;
+                }
+            }
+        };
+    }
 
     function get_spread_update(levels, updates) {
         const update = {};
@@ -903,11 +959,11 @@
 
     function create_fragment$1(ctx) {
     	let blockquote;
-    	let div0;
-    	let t1;
     	let p;
+    	let sup;
+    	let t1;
     	let t2;
-    	let div1;
+    	let sub;
     	let current;
     	const default_slot_template = /*$$slots*/ ctx[1].default;
     	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[0], null);
@@ -915,21 +971,20 @@
     	const block = {
     		c: function create() {
     			blockquote = element("blockquote");
-    			div0 = element("div");
-    			div0.textContent = "“";
-    			t1 = space();
     			p = element("p");
+    			sup = element("sup");
+    			sup.textContent = "“";
+    			t1 = space();
     			if (default_slot) default_slot.c();
     			t2 = space();
-    			div1 = element("div");
-    			div1.textContent = "„";
-    			attr_dev(div0, "class", "highlight font-bold text-xl m-0 text-left w-full svelte-1dwsrh7");
-    			add_location(div0, file$1, 7, 0, 255);
-    			attr_dev(p, "class", "mx-4");
-    			add_location(p, file$1, 10, 0, 337);
-    			attr_dev(div1, "class", "highlight font-bold text-xl m-0 text-right w-full svelte-1dwsrh7");
-    			add_location(div1, file$1, 11, 0, 371);
-    			attr_dev(blockquote, "class", "text-lg mx-auto py-2 italic svelte-1dwsrh7");
+    			sub = element("sub");
+    			sub.textContent = "„";
+    			attr_dev(sup, "class", "highlight font-bold text-xl not-italic svelte-1dwsrh7");
+    			add_location(sup, file$1, 8, 8, 271);
+    			attr_dev(sub, "class", "highlight font-bold text-xl not-italic svelte-1dwsrh7");
+    			add_location(sub, file$1, 10, 8, 367);
+    			add_location(p, file$1, 7, 4, 259);
+    			attr_dev(blockquote, "class", "text-lg mx-auto py-6 italic");
     			add_location(blockquote, file$1, 6, 0, 206);
     		},
     		l: function claim(nodes) {
@@ -937,16 +992,16 @@
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, blockquote, anchor);
-    			append_dev(blockquote, div0);
-    			append_dev(blockquote, t1);
     			append_dev(blockquote, p);
+    			append_dev(p, sup);
+    			append_dev(p, t1);
 
     			if (default_slot) {
     				default_slot.m(p, null);
     			}
 
-    			append_dev(blockquote, t2);
-    			append_dev(blockquote, div1);
+    			append_dev(p, t2);
+    			append_dev(p, sub);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
@@ -1257,6 +1312,31 @@
 			opacity: ${target_opacity - (od * u)}`
         };
     }
+    function slide(node, { delay = 0, duration = 400, easing = cubicOut }) {
+        const style = getComputedStyle(node);
+        const opacity = +style.opacity;
+        const height = parseFloat(style.height);
+        const padding_top = parseFloat(style.paddingTop);
+        const padding_bottom = parseFloat(style.paddingBottom);
+        const margin_top = parseFloat(style.marginTop);
+        const margin_bottom = parseFloat(style.marginBottom);
+        const border_top_width = parseFloat(style.borderTopWidth);
+        const border_bottom_width = parseFloat(style.borderBottomWidth);
+        return {
+            delay,
+            duration,
+            easing,
+            css: t => `overflow: hidden;` +
+                `opacity: ${Math.min(t * 20, 1) * opacity};` +
+                `height: ${t * height}px;` +
+                `padding-top: ${t * padding_top}px;` +
+                `padding-bottom: ${t * padding_bottom}px;` +
+                `margin-top: ${t * margin_top}px;` +
+                `margin-bottom: ${t * margin_bottom}px;` +
+                `border-top-width: ${t * border_top_width}px;` +
+                `border-bottom-width: ${t * border_bottom_width}px;`
+        };
+    }
 
     /* src/components/utils/slider/slide.svelte generated by Svelte v3.24.1 */
     const file$3 = "src/components/utils/slider/slide.svelte";
@@ -1291,21 +1371,22 @@
     			div1 = element("div");
     			p = element("p");
     			t2 = text(t2_value);
-    			attr_dev(h1, "class", "text-4xl font-black svelte-ichidn");
-    			add_location(h1, file$3, 14, 47, 715);
-    			attr_dev(a, "class", "my-auto svelte-ichidn");
+    			attr_dev(h1, "class", "text-4xl font-black svelte-xfsvux");
+    			add_location(h1, file$3, 14, 74, 905);
+    			attr_dev(a, "class", "mx-auto lg:my-auto svelte-xfsvux");
+    			attr_dev(a, "target", "_blank");
     			attr_dev(a, "href", a_href_value = /*data*/ ctx[0].url);
-    			add_location(a, file$3, 14, 12, 680);
-    			attr_dev(div0, "class", "flex-1 flex px-4");
-    			add_location(div0, file$3, 13, 8, 584);
-    			attr_dev(p, "class", "my-auto text-lg lg:text-3xl");
-    			add_location(p, file$3, 17, 12, 891);
+    			add_location(a, file$3, 14, 12, 843);
+    			attr_dev(div0, "class", "lg:flex-1 flex px-4");
+    			add_location(div0, file$3, 13, 8, 744);
+    			attr_dev(p, "class", "mx-auto lg:my-auto text-lg lg:text-3xl text-center");
+    			add_location(p, file$3, 17, 12, 1081);
     			attr_dev(div1, "class", "flex-1 flex");
-    			add_location(div1, file$3, 16, 8, 791);
+    			add_location(div1, file$3, 16, 8, 981);
     			attr_dev(div2, "class", "m-auto flex flex-col lg:flex-row h-64 w-11/12 lg:w-8/12 p-4 rounded-md");
-    			add_location(div2, file$3, 12, 4, 491);
-    			attr_dev(div3, "class", "slide svelte-ichidn");
-    			add_location(div3, file$3, 9, 0, 461);
+    			add_location(div2, file$3, 12, 4, 651);
+    			attr_dev(div3, "class", "slide svelte-xfsvux");
+    			add_location(div3, file$3, 9, 0, 621);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div3, anchor);
@@ -1484,7 +1565,7 @@
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[8] = list[i];
+    	child_ctx[7] = list[i];
     	return child_ctx;
     }
 
@@ -1494,7 +1575,7 @@
     	let current;
 
     	slide = new Slide({
-    			props: { data: /*slide*/ ctx[8] },
+    			props: { data: /*slide*/ ctx[7] },
     			$$inline: true
     		});
 
@@ -1508,7 +1589,7 @@
     		},
     		p: function update(ctx, dirty) {
     			const slide_changes = {};
-    			if (dirty & /*buffer*/ 1) slide_changes.data = /*slide*/ ctx[8];
+    			if (dirty & /*buffer*/ 1) slide_changes.data = /*slide*/ ctx[7];
     			slide.$set(slide_changes);
     		},
     		i: function intro(local) {
@@ -1575,14 +1656,14 @@
 
     			attr_dev(button0, "aria-label", "previous project");
     			attr_dev(button0, "class", "left svelte-ma5rze");
-    			add_location(button0, file$4, 45, 8, 1239);
+    			add_location(button0, file$4, 45, 8, 1272);
     			attr_dev(button1, "aria-label", "next project");
     			attr_dev(button1, "class", "right svelte-ma5rze");
-    			add_location(button1, file$4, 46, 8, 1327);
+    			add_location(button1, file$4, 46, 8, 1360);
     			attr_dev(div0, "class", "absolute inset-0 flex items-center justify-between");
-    			add_location(div0, file$4, 44, 4, 1166);
+    			add_location(div0, file$4, 44, 4, 1199);
     			attr_dev(div1, "class", "m-auto w-screen h-64 overflow-hidden relative");
-    			add_location(div1, file$4, 43, 0, 1102);
+    			add_location(div1, file$4, 43, 0, 1135);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1699,19 +1780,6 @@
     		transed = true;
     	}
 
-    	function automatic() {
-    		if (!transed) add();
-    		transed = false;
-    	}
-
-    	onMount(function () {
-    		interval = setInterval(automatic, 10000);
-    	});
-
-    	onDestroy(function () {
-    		clearInterval(interval);
-    	});
-
     	const writable_props = ["Data"];
 
     	Object.keys($$props).forEach(key => {
@@ -1735,8 +1803,7 @@
     		interval,
     		transed,
     		add,
-    		sub,
-    		automatic
+    		sub
     	});
 
     	$$self.$inject_state = $$props => {
@@ -2349,24 +2416,25 @@
     			a1 = element("a");
     			a1.textContent = "Svelte";
     			attr_dev(a0, "href", "mailto:john7abraham9@gmail.com");
-    			attr_dev(a0, "class", "svelte-1yaufuh");
-    			add_location(a0, file$a, 30, 8, 946);
+    			attr_dev(a0, "class", "svelte-jciogt");
+    			add_location(a0, file$a, 30, 8, 985);
     			attr_dev(h1, "class", "m-auto font-bold text-2xl text-center");
-    			add_location(h1, file$a, 28, 4, 866);
+    			add_location(h1, file$a, 28, 4, 905);
     			attr_dev(div, "id", "contact");
     			attr_dev(div, "class", "flex flex-col w-screen h-screen bg-transparent");
-    			add_location(div, file$a, 27, 0, 788);
+    			add_location(div, file$a, 27, 0, 827);
     			attr_dev(span, "class", "px-1");
     			set_style(span, "color", "var(--accent-color)");
     			set_style(span, "text-shadow", "0px 0px 1px var(--accent-glow)");
-    			add_location(span, file$a, 38, 8, 1150);
-    			attr_dev(a1, "class", "svelte svelte-1yaufuh");
+    			add_location(span, file$a, 38, 8, 1189);
+    			attr_dev(a1, "class", "svelte svelte-jciogt");
+    			attr_dev(a1, "target", "_blank");
     			attr_dev(a1, "href", "https://svelte.dev/");
-    			add_location(a1, file$a, 42, 8, 1305);
+    			add_location(a1, file$a, 42, 8, 1344);
     			attr_dev(h4, "class", "mx-auto text-center");
-    			add_location(h4, file$a, 36, 4, 1091);
+    			add_location(h4, file$a, 36, 4, 1130);
     			attr_dev(footer, "class", "flex border-t-1");
-    			add_location(footer, file$a, 35, 0, 1054);
+    			add_location(footer, file$a, 35, 0, 1093);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2683,7 +2751,64 @@
     	return child_ctx;
     }
 
-    // (48:8) {#each menuItems as menuItem}
+    // (49:4) {#if !$location['#top']}
+    function create_if_block$1(ctx) {
+    	let h1;
+    	let a;
+    	let h1_intro;
+    	let h1_outro;
+    	let current;
+
+    	const block = {
+    		c: function create() {
+    			h1 = element("h1");
+    			a = element("a");
+    			a.textContent = "John Abraham";
+    			attr_dev(a, "class", "hero svelte-106grpx");
+    			attr_dev(a, "href", "#top");
+    			add_location(a, file$c, 53, 12, 2024);
+    			attr_dev(h1, "class", "hidden lg:block font-bold text-2xl");
+    			add_location(h1, file$c, 49, 8, 1837);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, h1, anchor);
+    			append_dev(h1, a);
+    			current = true;
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+
+    			add_render_callback(() => {
+    				if (h1_outro) h1_outro.end(1);
+    				if (!h1_intro) h1_intro = create_in_transition(h1, slide, { duration: 250, easing: cubicOut });
+    				h1_intro.start();
+    			});
+
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			if (h1_intro) h1_intro.invalidate();
+    			h1_outro = create_out_transition(h1, slide, { duration: 250, easing: cubicOut });
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h1);
+    			if (detaching && h1_outro) h1_outro.end();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$1.name,
+    		type: "if",
+    		source: "(49:4) {#if !$location['#top']}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (62:8) {#each menuItems as menuItem}
     function create_each_block$1(ctx) {
     	let li;
     	let a;
@@ -2697,11 +2822,11 @@
     			a = element("a");
     			t = text(t_value);
     			attr_dev(a, "href", a_href_value = /*menuItem*/ ctx[4].link);
-    			attr_dev(a, "class", "svelte-y8kdsf");
-    			add_location(a, file$c, 50, 12, 1747);
-    			attr_dev(li, "class", "nav-container border-l-2 lg:border-b-2 lg:border-l-0 py-6 lg:py-2 lg:px-6 svelte-y8kdsf");
+    			attr_dev(a, "class", "svelte-106grpx");
+    			add_location(a, file$c, 64, 12, 2394);
+    			attr_dev(li, "class", "nav-container border-l-2 lg:border-b-2 lg:border-l-0 py-6 lg:py-2 lg:px-6 svelte-106grpx");
     			toggle_class(li, "active", /*$location*/ ctx[1][/*menuItem*/ ctx[4].link]);
-    			add_location(li, file$c, 48, 8, 1596);
+    			add_location(li, file$c, 62, 8, 2243);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
@@ -2722,7 +2847,7 @@
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(48:8) {#each menuItems as menuItem}",
+    		source: "(62:8) {#each menuItems as menuItem}",
     		ctx
     	});
 
@@ -2758,6 +2883,7 @@
 
     	hamburger = new Hamburger({ props: hamburger_props, $$inline: true });
     	binding_callbacks.push(() => bind(hamburger, "active", hamburger_active_binding));
+    	let if_block = !/*$location*/ ctx[1]["#top"] && create_if_block$1(ctx);
     	let each_value = /*menuItems*/ ctx[2];
     	validate_each_argument(each_value);
     	let each_blocks = [];
@@ -2777,6 +2903,7 @@
     			t2 = space();
     			div4 = element("div");
     			div3 = element("div");
+    			if (if_block) if_block.c();
     			t3 = space();
     			ol = element("ol");
 
@@ -2788,25 +2915,25 @@
     			li = element("li");
     			a = element("a");
     			a.textContent = "Resume";
-    			attr_dev(div0, "class", "hidden w-0 w-drawer svelte-y8kdsf");
-    			add_location(div0, file$c, 28, 0, 957);
+    			attr_dev(div0, "class", "hidden w-0 w-drawer svelte-106grpx");
+    			add_location(div0, file$c, 30, 0, 1255);
     			attr_dev(div1, "class", "flex m-auto");
-    			add_location(div1, file$c, 33, 4, 1122);
+    			add_location(div1, file$c, 35, 4, 1420);
     			attr_dev(div2, "class", "flex fixed right-0 top-0 pr-1 lg:hidden z-40");
-    			add_location(div2, file$c, 32, 0, 1059);
-    			attr_dev(div3, "class", "h-12 w-full");
-    			add_location(div3, file$c, 45, 4, 1471);
+    			add_location(div2, file$c, 34, 0, 1357);
+    			attr_dev(div3, "class", "h-12 pl-6 flex-1");
+    			add_location(div3, file$c, 47, 4, 1769);
     			attr_dev(a, "href", "https://docs.google.com/document/d/1ZRp1OYUPWxxOMaYpG4tjT4UsIAhNLra4AzoIYUm18lI/export?format=pdf");
-    			attr_dev(a, "class", "svelte-y8kdsf");
-    			add_location(a, file$c, 54, 12, 1930);
-    			attr_dev(li, "class", "nav-container border-l-2 lg:border-b-2 lg:border-l-0 py-6 lg:py-2 lg:px-6 svelte-y8kdsf");
-    			add_location(li, file$c, 53, 8, 1831);
+    			attr_dev(a, "class", "svelte-106grpx");
+    			add_location(a, file$c, 68, 12, 2577);
+    			attr_dev(li, "class", "nav-container border-l-2 lg:border-b-2 lg:border-l-0 py-6 lg:py-2 lg:px-6 svelte-106grpx");
+    			add_location(li, file$c, 67, 8, 2478);
     			attr_dev(ol, "class", "lg:flex text-center lg:m-auto");
-    			add_location(ol, file$c, 46, 4, 1507);
-    			attr_dev(div4, "class", "\n    fixed lg:flex top-0 right-0 h-screen lg:h-auto lg:w-screen z-30\n    bg-inherit lg:bg-transparent rounded-b \n    transition-all duration-300 ease-in-out \n    overflow-hidden svelte-y8kdsf");
+    			add_location(ol, file$c, 60, 4, 2154);
+    			attr_dev(div4, "class", "\n    fixed lg:flex top-0 right-0 h-screen lg:h-auto lg:w-screen z-30\n    bg-inherit lg:bg-transparent rounded-b \n    transition-all duration-300 ease-in-out \n    overflow-hidden svelte-106grpx");
     			toggle_class(div4, "w-0", !/*menuOpen*/ ctx[0]);
     			toggle_class(div4, "w-drawer", /*menuOpen*/ ctx[0]);
-    			add_location(div4, file$c, 37, 0, 1214);
+    			add_location(div4, file$c, 39, 0, 1512);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2820,6 +2947,7 @@
     			insert_dev(target, t2, anchor);
     			insert_dev(target, div4, anchor);
     			append_dev(div4, div3);
+    			if (if_block) if_block.m(div3, null);
     			append_dev(div4, t3);
     			append_dev(div4, ol);
 
@@ -2842,6 +2970,27 @@
     			}
 
     			hamburger.$set(hamburger_changes);
+
+    			if (!/*$location*/ ctx[1]["#top"]) {
+    				if (if_block) {
+    					if (dirty & /*$location*/ 2) {
+    						transition_in(if_block, 1);
+    					}
+    				} else {
+    					if_block = create_if_block$1(ctx);
+    					if_block.c();
+    					transition_in(if_block, 1);
+    					if_block.m(div3, null);
+    				}
+    			} else if (if_block) {
+    				group_outros();
+
+    				transition_out(if_block, 1, 1, () => {
+    					if_block = null;
+    				});
+
+    				check_outros();
+    			}
 
     			if (dirty & /*$location, menuItems*/ 6) {
     				each_value = /*menuItems*/ ctx[2];
@@ -2878,10 +3027,12 @@
     		i: function intro(local) {
     			if (current) return;
     			transition_in(hamburger.$$.fragment, local);
+    			transition_in(if_block);
     			current = true;
     		},
     		o: function outro(local) {
     			transition_out(hamburger.$$.fragment, local);
+    			transition_out(if_block);
     			current = false;
     		},
     		d: function destroy(detaching) {
@@ -2891,6 +3042,7 @@
     			destroy_component(hamburger);
     			if (detaching) detach_dev(t2);
     			if (detaching) detach_dev(div4);
+    			if (if_block) if_block.d();
     			destroy_each(each_blocks, detaching);
     		}
     	};
@@ -2934,6 +3086,8 @@
     	}
 
     	$$self.$capture_state = () => ({
+    		slide,
+    		cubicOut,
     		Hamburger,
     		location,
     		menuOpen,

@@ -1,4 +1,6 @@
 <script>
+import { slide } from 'svelte/transition';
+import { cubicOut } from 'svelte/easing';
 import Hamburger from './utils/Hamburger.svelte';
 import { location } from '../stores/navloc.js';
 let menuOpen = false;
@@ -25,6 +27,14 @@ let menuItems = [
 </script>
 
 <style lang="text/postcss">
+.hero{
+    color:var(--accent-color)!important;
+    text-decoration:none;
+    @apply transition-all duration-500 ease-in-out;
+}
+.hero:hover{
+    text-shadow: 0px 0px 1px var(--accent-glow);
+}
 .nav-container {
     @apply border-transparent transition-all duration-500 ease-in-out;
 }
@@ -66,7 +76,19 @@ let menuItems = [
     class:w-0='{!menuOpen}'
     class:w-drawer='{menuOpen}'
 >
-    <div class="h-12 w-full"></div>
+    <div class="h-12 pl-6 flex-1">
+    {#if !$location['#top']}
+        <h1 in:slide='{{duration:250,easing:cubicOut}}'
+            out:slide='{{duration:250,easing:cubicOut}}'
+            class="hidden lg:block font-bold text-2xl" 
+            >
+            <a class="hero"
+                href='#top'>
+                John Abraham
+            </a>
+        </h1>
+    {/if}
+    </div>
     <ol class="lg:flex text-center lg:m-auto">
         {#each menuItems as menuItem}
         <li class:active={$location[menuItem.link]}

@@ -11,12 +11,10 @@ blockquote > div {
 }
 </style>
 
-<blockquote class="text-lg mx-auto py-2 italic">
-<div class="highlight font-bold text-xl m-0 text-left w-full">
-    &ldquo;
-</div>
-<p class="mx-4"><slot></slot></p>
-<div class="highlight font-bold text-xl m-0 text-right w-full">
-    &ldquor;
-</div>
+<blockquote class="text-lg mx-auto py-6 italic">
+    <p>
+        <sup class="highlight font-bold text-xl not-italic">&ldquo;</sup>
+        <slot></slot>
+        <sub class="highlight font-bold text-xl not-italic">&ldquor;</sub>
+    </p>
 </blockquote>

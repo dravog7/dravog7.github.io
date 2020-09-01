@@ -29,6 +29,7 @@ a {
 }
 a.svelte{
     @apply px-1;
+    text-shadow:0px 0px 1px var(--accent-glow);
 }
 </style>
 
@@ -47,6 +48,6 @@ a.svelte{
             &#x2764
         </span>
         and 
-        <a class='svelte' href='https://svelte.dev/'>Svelte</a>
+        <a class='svelte' target="_blank" href='https://svelte.dev/'>Svelte</a>
     </h4>
 </footer>
