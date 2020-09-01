@@ -44,6 +44,7 @@ onDestroy(function(){
 }
 .left:hover,.right:hover{
     color: var(--accent-color);
+    text-shadow: 0px 0px 1px var(--accent-glow);
 }
 .left, .right{
     color: inherit;

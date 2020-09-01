@@ -3,10 +3,7 @@ export let active = false;
 </script>
 <style lang="text/postcss">
 @import 'hamburgers.css';
-.hamburger-inner{
-  background-color: var(--sec-color);
-}
-
+.hamburger-inner,
 .hamburger-inner::before,
 .hamburger-inner::after{
   background-color: var(--accent-color);

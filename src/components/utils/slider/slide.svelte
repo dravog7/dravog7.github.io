@@ -11,6 +11,7 @@ export let data;
     }
     h1::first-letter{
         color: var(--accent-color);
+        text-shadow: 0px 0px 1px var(--accent-glow);
     }
 </style>
 {#if data.active}
