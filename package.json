@@ -9,7 +9,7 @@
       "serve": "sirv dist",
       "serve:dev": "sirv dist --dev",
       "dev": "run-p build:auto serve:dev",
-      "test":"rollup -h"
+      "test": "rollup -h"
    },
    "keywords": [
       "Svelte",
@@ -32,6 +32,7 @@
       "rollup-plugin-node-resolve": "^5.0.0",
       "rollup-plugin-postcss": "^2.0.3",
       "rollup-plugin-svelte": "^5.0.3",
+      "rollup-plugin-svelte-svg": "^0.2.3",
       "rollup-plugin-terser": "^4.0.4",
       "sirv-cli": "^0.4.2",
       "svelte": "^3.4.0",
@@ -41,6 +42,7 @@
       "ws": ">=3.3.1"
    },
    "dependencies": {
+      "@icons-pack/svelte-simple-icons": "^1.8.0",
       "in-view": "^0.6.1",
       "tailwindcss-scroll-snap": "^1.0.0"
    }

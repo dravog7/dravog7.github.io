@@ -6,6 +6,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import svelte from 'rollup-plugin-svelte';
 import {terser} from 'rollup-plugin-terser';
 import svelte_preprocess_postcss from 'svelte-preprocess-postcss';
+import svelteSVG from "rollup-plugin-svelte-svg";
 
 const production = !process.env.ROLLUP_WATCH;
 export default {
@@ -26,6 +27,7 @@ export default {
             css.write('dist/components.css');
          },
       }),
+      svelteSVG({ dev:!production }),
       resolve(),
       commonjs(),
       postcss({

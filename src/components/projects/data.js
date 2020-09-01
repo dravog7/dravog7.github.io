@@ -3,17 +3,22 @@ const data = [
     {
         "name":"MegaIndexOf",
         "description":"A search engine for a collection of television series video files",
-        "github link":""
+        "url":"https://github.com/dravog7/MegaIndexof"
     },
     {
         "name":"Save-CLI",
         "description":"A multiconnection concurrent downloader on CLI",
-        "github link":""
+        "url":"https://github.com/dravog7/Save"
     },
     {
         "name":"EXecutioner",
-        "description":"A python library to execute untrusted code using known sandboxes",
-        "github link":""
+        "description":"A python library to execute untrusted code using known sandbox solutions",
+        "url":"https://github.com/iCodeDevs/EXecutioner"
+    },
+    {
+        "name":"MailCrypt",
+        "description":"A Chrome browser extension to encrypt and decrypt selected texts",
+        "url":"https://github.com/dravog7/MailCrypt"
     },
 ]
 

@@ -15,7 +15,7 @@ export let active = false;
 }
 </style>
 
-<button class:is-active={active} class="w-full hamburger focus:outline-none hamburger--emphatic" type="button" on:click={e=>active = !active}>
+<button aria-label="menu" class:is-active={active} class="w-full hamburger focus:outline-none hamburger--emphatic" type="button" on:click={e=>active = !active}>
   <span class="hamburger-box">
     <span class="hamburger-inner"></span>
   </span>

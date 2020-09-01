@@ -54,8 +54,8 @@ onDestroy(function(){
 
 <div class="m-auto w-screen h-64 overflow-hidden relative">
     <div class='absolute inset-0 flex items-center justify-between'>
-        <button class="left" on:click={sub}>&lt;</button>
-        <button class="right" on:click={add}>&gt;</button>
+        <button aria-label="previous project" class="left" on:click={sub}>&lt;</button>
+        <button aria-label="next project" class="right" on:click={add}>&gt;</button>
     </div>
     {#each buffer as slide}
         <Slide data={slide}/>
