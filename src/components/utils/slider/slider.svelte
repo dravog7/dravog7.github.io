@@ -39,14 +39,15 @@ onDestroy(function(){
 })
 </script>
 <style lang="text/postcss">
-.left, .right{
-    @apply rounded-full text-white text-2xl font-black z-10;
-}
 .left:focus,.right:focus{
     @apply outline-none;
 }
 .left:hover,.right:hover{
     color: var(--accent-color);
+}
+.left, .right{
+    color: inherit;
+    @apply rounded-full text-2xl font-black z-10;
 }
 </style>
 

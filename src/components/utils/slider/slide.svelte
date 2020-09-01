@@ -5,10 +5,13 @@ export let data;
 </script>
 
 <style lang="text/postcss">
-.slide {
-    opacity: 1;
-    @apply absolute flex w-full h-full;
-}
+    .slide {
+        opacity: 1;
+        @apply absolute flex w-full h-full;
+    }
+    h1::first-letter{
+        color: var(--accent-color);
+    }
 </style>
 {#if data.active}
 <div 

@@ -3,10 +3,13 @@ export let active = false;
 </script>
 <style lang="text/postcss">
 @import 'hamburgers.css';
-.hamburger-inner,
+.hamburger-inner{
+  background-color: var(--sec-color);
+}
+
 .hamburger-inner::before,
 .hamburger-inner::after{
-  background-color: var(--sec-color);
+  background-color: var(--accent-color);
 }
 .hamburger.is-active .hamburger-inner::before,
 .hamburger.is-active .hamburger-inner::after{
