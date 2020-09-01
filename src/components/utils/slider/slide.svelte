@@ -27,7 +27,7 @@ export let data;
             <a class="my-auto" href={data.url}><h1 class="text-4xl font-black">{data.name}</h1></a>
         </div>
         <div class="flex-1 flex" in:fly="{{x:100,delay:300, duration: 350, easing:cubicOut }}">
-            <p class="text-lg lg:text-3xl">{data.description}</p>
+            <p class="my-auto text-lg lg:text-3xl">{data.description}</p>
         </div>
     </div>
 </div>

@@ -41,6 +41,7 @@ class="flex flex-col
     <div class="w-9/12 text-md m-auto text-justify flex flex-col">
         <p>
         I first discovered programming in 8th grade with QBasic.
+        The first sentence of the first chapter on programming were,
         </p>
         <Quotes>
             Technology is only limited by our imagination

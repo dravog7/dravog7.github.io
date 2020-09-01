@@ -2,7 +2,7 @@ import { writable } from 'svelte/store';
 
 export let location = writable(
     {
-        '#top':true,
+        '#top':false,
         '#about':false,
         '#work':false,
         '#projects':false,

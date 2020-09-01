@@ -6,14 +6,17 @@
     color: var(--accent-color);
     text-shadow: 0px 0px 1px var(--accent-glow);
 }
+blockquote > div {
+    line-height: 0.5;
+}
 </style>
 
-<blockquote class="text-lg mx-auto py-6 italic">
-<h1 class="highlight text-left font-bold text-4xl leading-none w-full my-0">
+<blockquote class="text-lg mx-auto py-2 italic">
+<div class="highlight font-bold text-xl m-0 text-left w-full">
     &ldquo;
-</h1>
-<p class="w-full"><slot></slot></p>
-<h1 class="highlight text-right font-bold text-4xl leading-none w-full my-0">
+</div>
+<p class="mx-4"><slot></slot></p>
+<div class="highlight font-bold text-xl m-0 text-right w-full">
     &ldquor;
-</h1>
+</div>
 </blockquote>
