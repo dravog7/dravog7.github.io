@@ -28,6 +28,10 @@ onMount(async ()=>{
 #about {
     background-color: inherit;
 }
+.indented{
+    text-indent: 1.5em;
+    @apply py-1;
+}
 </style>
 
 <div id='about'
@@ -40,23 +44,22 @@ class="flex flex-col
     <h1 class="w-full font-bold text-4xl">About</h1>
     <div class="w-9/12 text-md m-auto text-justify flex flex-col">
         <p>
-        I first discovered programming in 8th grade with QBasic.
-        The first sentence of the first chapter on programming were,
+        A software developer who loves to create.
         </p>
         <Quotes>
             Technology is only limited by our imagination
         </Quotes>
-        <p>
-        I felt like I was given knowledge of a power to create almost anything.
-        My very first creation was a small pokemon game in QBasic 
-        imitating features of the original GBA games. The journey of creating something
-        was so exhilarating I never forgot it and wanted to do more.
-        </p><p>
-        I build on random ideas,needs and wants.
-        I wrote python scripts to organize files in my hard drive and 
-        to host simple http servers for file transfer over wifi.
-        The joy of solving problems and crossing obstacles brought me satisfaction.
-        </p><p>
+        <p class="indented">
+        When I first learned to code, I found myself capable of bringing life to ideas 
+        without material expenses. I started by fulfilling my day to day needs and wants 
+        by writing python scripts for organizing files, send files across networks, etc. 
+        Later I sought out the needs of others around me. I made a search engine that 
+        indexed television series video files and made browser extensions to simplify 
+        tasks in a game.
+        </p><p class="indented">
+        Through these experiences, I learned about my passion to make software solutions 
+        for myself and others. I am currently a freelance software developer specializing 
+        in Python.
         </p>
     </div>
 </div>
