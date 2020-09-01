@@ -2351,7 +2351,7 @@
     			attr_dev(a0, "href", "mailto:john7abraham9@gmail.com");
     			attr_dev(a0, "class", "svelte-1yaufuh");
     			add_location(a0, file$a, 30, 8, 946);
-    			attr_dev(h1, "class", "m-auto font-bold text-3xl text-center");
+    			attr_dev(h1, "class", "m-auto font-bold text-2xl text-center");
     			add_location(h1, file$a, 28, 4, 866);
     			attr_dev(div, "id", "contact");
     			attr_dev(div, "class", "flex flex-col w-screen h-screen bg-transparent");

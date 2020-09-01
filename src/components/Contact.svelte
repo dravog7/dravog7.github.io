@@ -33,7 +33,7 @@ a.svelte{
 </style>
 
 <div id="contact" class="flex flex-col w-screen h-screen bg-transparent">
-    <h1 class="m-auto font-bold text-3xl text-center">
+    <h1 class="m-auto font-bold text-2xl text-center">
         contact me @
         <a href='mailto:john7abraham9@gmail.com'>
             john7abraham9@gmail.com
