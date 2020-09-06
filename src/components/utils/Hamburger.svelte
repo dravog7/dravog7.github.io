@@ -10,8 +10,8 @@ export let active = false;
 }
 .hamburger.is-active .hamburger-inner::before,
 .hamburger.is-active .hamburger-inner::after{
-  background-color: var(--accent-color);
-  box-shadow: 0px 0px 1px var(--accent-glow);
+  background-color: var(--accent2-color);
+  box-shadow: 0px 0px 1px var(--accent2-glow);
 }
 </style>
 

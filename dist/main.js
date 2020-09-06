@@ -2663,15 +2663,15 @@
     			button = element("button");
     			span1 = element("span");
     			span0 = element("span");
-    			attr_dev(span0, "class", "hamburger-inner svelte-9xmqry");
-    			add_location(span0, file$b, 14, 4, 23106);
-    			attr_dev(span1, "class", "hamburger-box svelte-9xmqry");
-    			add_location(span1, file$b, 13, 2, 23073);
+    			attr_dev(span0, "class", "hamburger-inner svelte-3xvzpy");
+    			add_location(span0, file$b, 14, 4, 23108);
+    			attr_dev(span1, "class", "hamburger-box svelte-3xvzpy");
+    			add_location(span1, file$b, 13, 2, 23075);
     			attr_dev(button, "aria-label", "menu");
-    			attr_dev(button, "class", "w-full hamburger focus:outline-none hamburger--emphatic svelte-9xmqry");
+    			attr_dev(button, "class", "w-full hamburger focus:outline-none hamburger--emphatic svelte-3xvzpy");
     			attr_dev(button, "type", "button");
     			toggle_class(button, "is-active", /*active*/ ctx[0]);
-    			add_location(button, file$b, 12, 0, 22910);
+    			add_location(button, file$b, 12, 0, 22912);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
