@@ -27,9 +27,18 @@ onMount(async ()=>{
 #projects {
     background-color: inherit;
 }
+.grad-bg{
+    background: radial-gradient(
+        circle at 0% 0%,
+        var(--main-color) 0% 15%,
+        var(--accent-color) 16% 17%,
+        var(--main-color) 18% 83%, 
+        var(--accent2-color) 84% 85%,
+        var(--main-color) 86% 100%);
+}
 </style>
 
-<div id='projects' class="flex flex-col bg-transparent w-screen h-screen py-24">
+<div id='projects' class="flex flex-col bg-transparent w-screen h-screen py-24 grad-bg">
     <h1 class="mx-auto font-bold text-4xl">Projects</h1>
     <div class="mx-auto w-11/12 flex-1">
         <ProjectList/>
