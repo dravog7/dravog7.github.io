@@ -872,16 +872,16 @@
     			t1 = space();
     			p = element("p");
     			p.textContent = "A Software developer who loves to solve problems. (Not the Indian actor!)";
-    			attr_dev(h1, "class", "font-bold text-5xl mask svelte-16y4nyy");
+    			attr_dev(h1, "class", "font-bold text-5xl mask svelte-1lcw5n1");
     			set_style(h1, "color", "var(--accent-color)");
-    			add_location(h1, file, 27, 8, 1291);
+    			add_location(h1, file, 27, 8, 1297);
     			attr_dev(p, "class", "text-lg");
-    			add_location(p, file, 28, 8, 1387);
+    			add_location(p, file, 28, 8, 1393);
     			attr_dev(div0, "class", "m-auto text-center w-7/12");
-    			add_location(div0, file, 26, 4, 1243);
+    			add_location(div0, file, 26, 4, 1249);
     			attr_dev(div1, "id", "top");
-    			attr_dev(div1, "class", "flex w-screen h-screen grad-bg svelte-16y4nyy");
-    			add_location(div1, file, 25, 0, 1185);
+    			attr_dev(div1, "class", "flex w-screen h-screen grad-bg svelte-1lcw5n1");
+    			add_location(div1, file, 25, 0, 1191);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -979,13 +979,13 @@
     			t2 = space();
     			sub = element("sub");
     			sub.textContent = "„";
-    			attr_dev(sup, "class", "highlight font-bold text-xl not-italic svelte-1dwsrh7");
-    			add_location(sup, file$1, 8, 8, 271);
-    			attr_dev(sub, "class", "highlight font-bold text-xl not-italic svelte-1dwsrh7");
-    			add_location(sub, file$1, 10, 8, 367);
-    			add_location(p, file$1, 7, 4, 259);
+    			attr_dev(sup, "class", "highlight font-bold text-xl not-italic svelte-iv4b7x");
+    			add_location(sup, file$1, 8, 8, 320);
+    			attr_dev(sub, "class", "highlight2 font-bold text-xl not-italic svelte-iv4b7x");
+    			add_location(sub, file$1, 10, 8, 416);
+    			add_location(p, file$1, 7, 4, 308);
     			attr_dev(blockquote, "class", "text-lg mx-auto py-6 italic");
-    			add_location(blockquote, file$1, 6, 0, 206);
+    			add_location(blockquote, file$1, 6, 0, 255);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2784,11 +2784,11 @@
     			h1 = element("h1");
     			a = element("a");
     			a.textContent = "John Abraham";
-    			attr_dev(a, "class", "hero svelte-106grpx");
+    			attr_dev(a, "class", "hero svelte-1igi4cb");
     			attr_dev(a, "href", "#top");
-    			add_location(a, file$c, 53, 12, 2024);
+    			add_location(a, file$c, 53, 12, 2244);
     			attr_dev(h1, "class", "hidden lg:block font-bold text-2xl");
-    			add_location(h1, file$c, 49, 8, 1837);
+    			add_location(h1, file$c, 49, 8, 2057);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h1, anchor);
@@ -2842,11 +2842,11 @@
     			a = element("a");
     			t = text(t_value);
     			attr_dev(a, "href", a_href_value = /*menuItem*/ ctx[4].link);
-    			attr_dev(a, "class", "svelte-106grpx");
-    			add_location(a, file$c, 64, 12, 2394);
-    			attr_dev(li, "class", "nav-container border-l-2 lg:border-b-2 lg:border-l-0 py-6 lg:py-2 lg:px-6 svelte-106grpx");
+    			attr_dev(a, "class", "svelte-1igi4cb");
+    			add_location(a, file$c, 64, 12, 2614);
+    			attr_dev(li, "class", "nav-container border-l-2 lg:border-b-2 lg:border-l-0 py-6 lg:py-2 lg:px-6 svelte-1igi4cb");
     			toggle_class(li, "active", /*$location*/ ctx[1][/*menuItem*/ ctx[4].link]);
-    			add_location(li, file$c, 62, 8, 2243);
+    			add_location(li, file$c, 62, 8, 2463);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
@@ -2935,25 +2935,25 @@
     			li = element("li");
     			a = element("a");
     			a.textContent = "Resume";
-    			attr_dev(div0, "class", "hidden w-0 w-drawer svelte-106grpx");
-    			add_location(div0, file$c, 30, 0, 1255);
+    			attr_dev(div0, "class", "hidden w-0 w-drawer svelte-1igi4cb");
+    			add_location(div0, file$c, 30, 0, 1475);
     			attr_dev(div1, "class", "flex m-auto");
-    			add_location(div1, file$c, 35, 4, 1420);
+    			add_location(div1, file$c, 35, 4, 1640);
     			attr_dev(div2, "class", "flex fixed right-0 top-0 pr-1 lg:hidden z-40");
-    			add_location(div2, file$c, 34, 0, 1357);
+    			add_location(div2, file$c, 34, 0, 1577);
     			attr_dev(div3, "class", "h-12 pl-6 flex-1");
-    			add_location(div3, file$c, 47, 4, 1769);
+    			add_location(div3, file$c, 47, 4, 1989);
     			attr_dev(a, "href", "https://docs.google.com/document/d/1ZRp1OYUPWxxOMaYpG4tjT4UsIAhNLra4AzoIYUm18lI/export?format=pdf");
-    			attr_dev(a, "class", "svelte-106grpx");
-    			add_location(a, file$c, 68, 12, 2577);
-    			attr_dev(li, "class", "nav-container border-l-2 lg:border-b-2 lg:border-l-0 py-6 lg:py-2 lg:px-6 svelte-106grpx");
-    			add_location(li, file$c, 67, 8, 2478);
+    			attr_dev(a, "class", "svelte-1igi4cb");
+    			add_location(a, file$c, 68, 12, 2797);
+    			attr_dev(li, "class", "nav-container border-l-2 lg:border-b-2 lg:border-l-0 py-6 lg:py-2 lg:px-6 svelte-1igi4cb");
+    			add_location(li, file$c, 67, 8, 2698);
     			attr_dev(ol, "class", "lg:flex text-center lg:m-auto");
-    			add_location(ol, file$c, 60, 4, 2154);
-    			attr_dev(div4, "class", "\n    fixed lg:flex top-0 right-0 h-screen lg:h-auto lg:w-screen z-30\n    bg-inherit lg:bg-transparent rounded-b \n    transition-all duration-300 ease-in-out \n    overflow-hidden svelte-106grpx");
+    			add_location(ol, file$c, 60, 4, 2374);
+    			attr_dev(div4, "class", "\n    fixed lg:flex top-0 right-0 h-screen lg:h-auto lg:w-screen z-30\n    bg-inherit lg:bg-transparent rounded-b \n    transition-all duration-300 ease-in-out \n    overflow-hidden svelte-1igi4cb");
     			toggle_class(div4, "w-0", !/*menuOpen*/ ctx[0]);
     			toggle_class(div4, "w-drawer", /*menuOpen*/ ctx[0]);
-    			add_location(div4, file$c, 39, 0, 1512);
+    			add_location(div4, file$c, 39, 0, 1732);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");

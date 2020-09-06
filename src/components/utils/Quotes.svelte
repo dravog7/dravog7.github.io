@@ -6,8 +6,9 @@
     color: var(--accent-color);
     text-shadow: 0px 0px 1px var(--accent-glow);
 }
-blockquote > div {
-    line-height: 0.5;
+.highlight2{
+    color: var(--accent2-color);
+    text-shadow: 0px 0px 1px var(--accent2-glow);
 }
 </style>
 
@@ -15,6 +16,6 @@ blockquote > div {
     <p>
         <sup class="highlight font-bold text-xl not-italic">&ldquo;</sup>
         <slot></slot>
-        <sub class="highlight font-bold text-xl not-italic">&ldquor;</sub>
+        <sub class="highlight2 font-bold text-xl not-italic">&ldquor;</sub>
     </p>
 </blockquote>

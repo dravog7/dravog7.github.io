@@ -34,7 +34,7 @@ onMount(async ()=>{
         var(--main-color) 86% 100%);
 }
 .mask{
-    background:linear-gradient(var(--accent-color), var(--accent2-color));
+    background:linear-gradient(45deg,var(--accent-color), var(--accent2-color));
     background-clip:text;
     -webkit-text-fill-color: transparent;
 }

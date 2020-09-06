@@ -44,6 +44,12 @@ let menuItems = [
 .nav-container.active{
     border-color: var(--accent-color);
 }
+.nav-container:nth-child(even):hover{
+    border-color: var(--accent2-color);
+}
+.nav-container:nth-child(even).active{
+    border-color: var(--accent2-color);
+}
 .nav-container > a {
     color: var(--sec-color)!important;
     text-decoration: none!important;
@@ -51,6 +57,10 @@ let menuItems = [
 .nav-container.active > a{
     color: var(--accent-color)!important;
     text-shadow: 0px 0px 1px var(--accent-glow);
+}
+.nav-container:nth-child(even).active > a{
+    color: var(--accent2-color)!important;
+    text-shadow: 0px 0px 1px var(--accent2-glow);
 }
 .w-drawer{
     @apply w-1/2;
