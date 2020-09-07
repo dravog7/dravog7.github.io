@@ -24,15 +24,6 @@ onMount(async ()=>{
 #top {
     background-color: inherit;
 }
-.grad-bg{
-    background: radial-gradient(
-        circle at 100% 0%,
-        var(--main-color) 0% 18%,
-        var(--accent-color) 19% 20%,
-        var(--main-color) 21% 83%, 
-        var(--accent2-color) 84% 85%,
-        var(--main-color) 86% 100%);
-}
 .mask{
     background:linear-gradient(45deg,var(--accent-color), var(--accent2-color));
     background-clip:text;
