@@ -872,16 +872,16 @@
     			t1 = space();
     			p = element("p");
     			p.textContent = "A Software developer who loves to solve problems. (Not the Indian actor!)";
-    			attr_dev(h1, "class", "font-bold text-5xl mask svelte-1lp7ce5");
+    			attr_dev(h1, "class", "font-bold text-5xl mask svelte-149dpsi");
     			set_style(h1, "color", "var(--accent-color)");
-    			add_location(h1, file, 27, 8, 1313);
+    			add_location(h1, file, 27, 8, 832);
     			attr_dev(p, "class", "text-lg");
-    			add_location(p, file, 28, 8, 1409);
+    			add_location(p, file, 28, 8, 928);
     			attr_dev(div0, "class", "m-auto text-center w-7/12");
-    			add_location(div0, file, 26, 4, 1265);
+    			add_location(div0, file, 26, 4, 784);
     			attr_dev(div1, "id", "top");
-    			attr_dev(div1, "class", "flex w-screen h-screen grad-bg svelte-1lp7ce5");
-    			add_location(div1, file, 25, 0, 1207);
+    			attr_dev(div1, "class", "flex w-screen h-screen grad-bg svelte-149dpsi");
+    			add_location(div1, file, 25, 0, 726);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1969,12 +1969,12 @@
     			div0 = element("div");
     			create_component(projectlist.$$.fragment);
     			attr_dev(h1, "class", "mx-auto font-bold text-4xl");
-    			add_location(h1, file$6, 29, 4, 1208);
+    			add_location(h1, file$6, 29, 4, 733);
     			attr_dev(div0, "class", "mx-auto w-11/12 flex-1");
-    			add_location(div0, file$6, 30, 4, 1265);
+    			add_location(div0, file$6, 30, 4, 790);
     			attr_dev(div1, "id", "projects");
-    			attr_dev(div1, "class", "flex flex-col bg-transparent w-screen h-screen py-24 grad-bg svelte-1s8fq59");
-    			add_location(div1, file$6, 28, 0, 1115);
+    			attr_dev(div1, "class", "flex flex-col bg-transparent w-screen h-screen py-24 grad-bg svelte-lzd1ze");
+    			add_location(div1, file$6, 28, 0, 640);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
