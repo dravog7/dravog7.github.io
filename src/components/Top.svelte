@@ -25,9 +25,21 @@ onMount(async ()=>{
     background-color: inherit;
 }
 .mask{
-    background:linear-gradient(45deg,var(--accent-color), var(--accent2-color));
+    background:linear-gradient(45deg,var(--accent-color) 48%,#fff, var(--accent2-color) 52%);
     background-clip:text;
+    background-size: 200% auto;
     -webkit-text-fill-color: transparent;
+    animation: 30s linear 0s infinite spinBg;
+}
+
+@keyframes spinBg {
+    from {
+        background-position: 0% center;
+    }
+
+    to {
+        background-position: 200% center;
+    }
 }
 </style>
 

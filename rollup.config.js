@@ -24,7 +24,7 @@ export default {
             style: svelte_preprocess_postcss(),
          },
          css: css => {
-            css.write('dist/components.css');
+            css.write('components.css');
          },
       }),
       svelteSVG({ dev:!production }),
